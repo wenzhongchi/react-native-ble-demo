@@ -1,4 +1,4 @@
-import { rootReducer } from "../store/store";
+import { rootReducer } from '../store/store';
 
 export interface Dictionary<T> {
     [Key: string]: T;
@@ -10,7 +10,7 @@ export interface StringObject<T = string> {
 
 export type Partial<T> = { [P in keyof T]?: T[P] };
 
-export type TouchIdType = "FaceID" | "TouchID";
+export type TouchIdType = 'FaceID' | 'TouchID';
 
 // redux state
 export type ReduxState = ReturnType<typeof rootReducer>;

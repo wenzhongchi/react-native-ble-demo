@@ -14,10 +14,14 @@
     "android:release": "react-native run-android --variant=release"
   },
   "dependencies": {
+    "lodash": "^4.17.15",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-device-info": "^2.3.2",
+    "react-native-slider": "^0.11.0",
     "react-native-status-bar-height": "^2.4.0",
+    "react-native-svg": "^9.6.4",
+    "react-native-switch": "^1.5.0",
     "react-redux": "^7.1.0",
     "redux-persist": "^5.10.0",
     "redux-persist-seamless-immutable": "^2.0.0",
@@ -29,6 +33,7 @@
     "@babel/runtime": "^7.5.5",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.137",
     "@types/react": "^16.9.2",
     "@types/react-native": "^0.60.8",
     "@types/react-redux": "^7.1.2",
