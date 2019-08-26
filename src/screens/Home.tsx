@@ -20,46 +20,146 @@ import StarTopBgImage from '../assets/png/star_top_bg.png';
 import LightTopBgImage from '../assets/png/light_top_bg.png';
 import AppBgImage from '../assets/png/app_bg.png';
 import TouchButton from '../components/button/TouchButton';
+import LightSwitch from '../components/switch/LightSwitch';
+import LightSlider from '../components/slider/LightSlider';
+import Colors from '../styles/colors';
+import MenuButton from '../components/button/MenuButton';
 
 interface Props {}
 
 interface State {
-  showProtection: boolean;
-  showPlaid: boolean;
+  showEffect: boolean;
+  showColor: boolean;
+  showLightEffect: boolean;
+  showLightColor: boolean;
 }
 class Home extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showProtection: false,
-      showPlaid: false,
+      showEffect: false,
+      showColor: false,
+      showLightEffect: false,
+      showLightColor: false,
     };
   }
 
   componentDidMount() {}
 
   render() {
+    const { showEffect, showColor } = this.state;
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <ImageBackground
           source={AppBgImage}
           style={{ width: '100%', height: '100%' }}>
           <View style={styles.starContainer}>
-            <View>
-              <Image
+            <View style={{ flex: 1 }}>
+              <ImageBackground
                 style={{ height: 70, width: '100%' }}
-                source={StarTopBgImage}></Image>
-              <TouchButton
-                iconName="StarIcon"
-                textLabel="Start Night Effects"
-              />
+                source={StarTopBgImage}>
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    marginTop: 10,
+                    fontSize: 25,
+                    fontWeight: 'bold',
+                    color: Colors.white,
+                  }}>
+                  Stars
+                </Text>
+              </ImageBackground>
+              {showEffect ? (
+                <View
+                  style={{
+                    flex: 1,
+                  }}>
+                  <View style={{ flexDirection: 'row', flex: 1 }}>
+                    <MenuButton
+                      iconName="TwinkleIcon"
+                      textLabel="Twinkle"
+                      rightBorder
+                      bottomBorder
+                    />
+                    <MenuButton
+                      iconName="FireflyIcon"
+                      textLabel="Firefly"
+                      bottomBorder
+                    />
+                  </View>
+                  <View style={{ flexDirection: 'row', flex: 1 }}>
+                    <MenuButton
+                      iconName="RandomIcon"
+                      textLabel="Random"
+                      rightBorder
+                    />
+                    <MenuButton
+                      iconName="LightningIcon"
+                      textLabel="Lightning"
+                    />
+                  </View>
+                </View>
+              ) : (
+                <View style={{ marginHorizontal: '10%' }}>
+                  <TouchButton
+                    containerStyle={{ marginVertical: 10 }}
+                    iconName="StarIcon"
+                    textLabel="Start Night Effects"
+                    onPress={() => this.setState({ showEffect: true })}
+                  />
+                  <TouchButton
+                    containerStyle={{ marginVertical: 10 }}
+                    iconName="ColorStarIcon"
+                    textLabel="Starry Night Colors"
+                  />
+                  <TouchButton
+                    containerStyle={{ marginVertical: 10 }}
+                    iconName="ShootingStarIcon"
+                    textLabel="Shooting Star"
+                  />
+                  <View>
+                    <LightSwitch />
+                  </View>
+                </View>
+              )}
             </View>
           </View>
           <View style={styles.lightContainer}>
             <View>
-              <Image
+              <ImageBackground
                 style={{ height: 70, width: '100%' }}
-                source={LightTopBgImage}></Image>
+                source={LightTopBgImage}>
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    marginTop: 10,
+                    fontSize: 25,
+                    fontWeight: 'bold',
+                    color: Colors.white,
+                  }}>
+                  Ambient Light
+                </Text>
+              </ImageBackground>
+              <View style={{ marginHorizontal: '10%' }}>
+                <TouchButton
+                  containerStyle={{ marginVertical: 10 }}
+                  iconName="StarIcon"
+                  textLabel="Start Night Effects"
+                />
+                <TouchButton
+                  containerStyle={{ marginVertical: 10 }}
+                  iconName="StarIcon"
+                  textLabel="Start Night Effects"
+                />
+                <View>
+                  <LightSwitch />
+                </View>
+                <View>
+                  <LightSlider textLabel="Speed" sliderValue={0} />
+                  <LightSlider textLabel="Dim" sliderValue={0} />
+                </View>
+              </View>
             </View>
           </View>
           <View style={styles.statusContainer}>

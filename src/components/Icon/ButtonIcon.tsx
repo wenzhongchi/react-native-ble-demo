@@ -4,13 +4,29 @@ import { ViewStyle, Image } from 'react-native';
 
 // svg
 import StarIcon from '../../assets/svg/star.js';
+import ShootingStarIcon from '../../assets/svg/shooting_star.js';
+import ColorStarIcon from '../../assets/svg/color_star.js';
+import EffectsIcon from '../../assets/svg/effects.js';
+import EffectsColorIcon from '../../assets/svg/effects_color.js';
 
+import TwinkleIcon from '../../assets/svg/twinkle.js';
+import FireflyIcon from '../../assets/svg/firefly.js';
+import RandomIcon from '../../assets/svg/random.js';
+import LightningIcon from '../../assets/svg/lightning.js';
 // png
 
 const DEFAULT_SIZE = 30;
 
 export const COMPONENT_SVG_REGISTRY = {
   StarIcon,
+  ShootingStarIcon,
+  ColorStarIcon,
+  EffectsIcon,
+  EffectsColorIcon,
+  TwinkleIcon,
+  FireflyIcon,
+  RandomIcon,
+  LightningIcon,
 };
 
 export const COMPONENT_PNG_REGISTRY = {};

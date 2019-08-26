@@ -1,46 +1,98 @@
-import React from 'react';
-import { TouchableOpacity, ViewStyle, Text } from 'react-native';
+import React, { useState } from 'react';
+import { ViewStyle, Text, TouchableHighlight, View } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
+import ButtonIcon from '../Icon/ButtonIcon';
 
 interface Props {
   onPress: () => void;
+  iconName: string;
   containerStyle?: ViewStyle;
-  textLabel: string;
   buttonHeight?: number;
+  buttonWidth?: number;
+  textLabel: string;
   fontSize?: number;
+  disabled?: boolean;
+  leftBorder?: boolean;
+  bottomBorder?: boolean;
+  topBorder?: boolean;
+  rightBorder?: boolean;
 }
 
 const MenuButton = (props: Props) => {
-  const { onPress, containerStyle, buttonHeight, textLabel, fontSize } = props;
+  const {
+    onPress,
+    containerStyle,
+    iconName,
+    buttonHeight,
+    buttonWidth,
+    textLabel,
+    fontSize,
+    disabled,
+    topBorder,
+    leftBorder,
+    rightBorder,
+    bottomBorder,
+  } = props;
 
-  const textColor = Colors.textColor1;
+  const [textColor, setTextColor] = useState(Colors.textColor1);
 
   return (
-    <TouchableOpacity
+    <TouchableHighlight
+      disabled={disabled}
       onPress={onPress}
+      underlayColor={Colors.borderColor}
+      onShowUnderlay={() => {
+        setTextColor(Colors.textColor2);
+      }}
+      onHideUnderlay={() => {
+        setTextColor(Colors.textColor1);
+      }}
       style={[
         {
           height: buttonHeight,
-          justifyContent: 'center',
+          width: buttonWidth,
+          flex: 1,
+          borderTopWidth: topBorder ? 1 : 0,
+          borderLeftWidth: leftBorder ? 1 : 0,
+          borderRightWidth: rightBorder ? 1 : 0,
+          borderBottomWidth: bottomBorder ? 1 : 0,
+          borderColor: Colors.white,
         },
         containerStyle,
       ]}>
-      <Text
-        style={{
-          color: textColor,
-          alignSelf: 'center',
-          fontSize: fontSize,
-        }}>
-        {textLabel}
-      </Text>
-    </TouchableOpacity>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: 'column',
+            flex: 1,
+          }}>
+          <ButtonIcon
+            size={100}
+            style={{ alignSelf: 'center', marginTop: 10 }}
+            name={iconName}
+          />
+          <Text
+            style={{
+              marginTop: -20,
+              color: textColor,
+              alignSelf: 'center',
+              fontSize: fontSize,
+              fontWeight: 'bold',
+            }}>
+            {textLabel}
+          </Text>
+        </View>
+      </View>
+    </TouchableHighlight>
   );
 };
 
 MenuButton.defaultProps = {
-  buttonHeight: 48,
-  fontSize: 13,
+  buttonHeight: '100%',
+  buttonWidth: '50%',
+  fontSize: 22,
+  disabled: false,
 };
 
 export default DebouncedButton(MenuButton);

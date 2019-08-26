@@ -26,31 +26,55 @@ const TouchButton = (props: Props) => {
   } = props;
 
   const [textColor, setTextColor] = useState(Colors.textColor1);
+  const [lineColor, setLineColor] = useState(Colors.borderColor);
 
   return (
     <TouchableHighlight
       disabled={disabled}
       onPress={onPress}
       underlayColor={Colors.borderColor}
-      onShowUnderlay={() => setTextColor(Colors.textColor2)}
-      onHideUnderlay={() => setTextColor(Colors.textColor1)}
+      onShowUnderlay={() => {
+        setTextColor(Colors.textColor2);
+        setLineColor(Colors.borderColor1);
+      }}
+      onHideUnderlay={() => {
+        setTextColor(Colors.textColor1);
+        setLineColor(Colors.borderColor);
+      }}
       style={[
         {
           height: buttonHeight,
           justifyContent: 'center',
-          borderWidth: 2,
+          borderWidth: 3,
           borderColor: Colors.borderColor,
           borderRadius: 8,
         },
         containerStyle,
       ]}>
-      <View>
-        <ButtonIcon name={iconName} />
+      <View style={{ flexDirection: 'row' }}>
+        <View
+          style={{
+            width: 40,
+            borderRightWidth: 2,
+            borderRightColor: lineColor,
+            marginTop: 4,
+            marginBottom: 4,
+            marginRight: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ButtonIcon
+            size={40}
+            style={{ alignSelf: 'center', marginBottom: 5 }}
+            name={iconName}
+          />
+        </View>
         <Text
           style={{
             color: textColor,
             alignSelf: 'center',
             fontSize: fontSize,
+            fontWeight: 'bold',
           }}>
           {textLabel}
         </Text>
@@ -61,7 +85,7 @@ const TouchButton = (props: Props) => {
 
 TouchButton.defaultProps = {
   buttonHeight: 48,
-  fontSize: 15,
+  fontSize: 22,
   disabled: false,
 };
 
