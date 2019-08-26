@@ -7,6 +7,8 @@ import ButtonIcon from '../Icon/ButtonIcon';
 interface Props {
   onPress: () => void;
   iconName: string;
+  iconSize?: number;
+  iconMarginTop?: number;
   containerStyle?: ViewStyle;
   buttonHeight?: number;
   buttonWidth?: number;
@@ -24,6 +26,8 @@ const MenuButton = (props: Props) => {
     onPress,
     containerStyle,
     iconName,
+    iconSize,
+    iconMarginTop,
     buttonHeight,
     buttonWidth,
     textLabel,
@@ -61,15 +65,20 @@ const MenuButton = (props: Props) => {
         },
         containerStyle,
       ]}>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <View
           style={{
             flexDirection: 'column',
             flex: 1,
           }}>
           <ButtonIcon
-            size={100}
-            style={{ alignSelf: 'center', marginTop: 10 }}
+            size={iconSize}
+            style={{ alignSelf: 'center', marginTop: iconMarginTop }}
             name={iconName}
           />
           <Text
@@ -79,6 +88,7 @@ const MenuButton = (props: Props) => {
               alignSelf: 'center',
               fontSize: fontSize,
               fontWeight: 'bold',
+              textAlign: 'center',
             }}>
             {textLabel}
           </Text>
@@ -93,6 +103,8 @@ MenuButton.defaultProps = {
   buttonWidth: '50%',
   fontSize: 22,
   disabled: false,
+  iconSize: 100,
+  iconMarginTop: 10,
 };
 
 export default DebouncedButton(MenuButton);

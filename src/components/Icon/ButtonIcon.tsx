@@ -13,6 +13,10 @@ import TwinkleIcon from '../../assets/svg/twinkle.js';
 import FireflyIcon from '../../assets/svg/firefly.js';
 import RandomIcon from '../../assets/svg/random.js';
 import LightningIcon from '../../assets/svg/lightning.js';
+
+import FadeIcon from '../../assets/svg/fade.js';
+import BlinkIcon from '../../assets/svg/blink.js';
+import NoEffectIcon from '../../assets/svg/no_effect.js';
 // png
 
 const DEFAULT_SIZE = 30;
@@ -27,6 +31,9 @@ export const COMPONENT_SVG_REGISTRY = {
   FireflyIcon,
   RandomIcon,
   LightningIcon,
+  FadeIcon,
+  BlinkIcon,
+  NoEffectIcon,
 };
 
 export const COMPONENT_PNG_REGISTRY = {};

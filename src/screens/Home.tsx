@@ -23,32 +23,179 @@ import TouchButton from '../components/button/TouchButton';
 import LightSwitch from '../components/switch/LightSwitch';
 import LightSlider from '../components/slider/LightSlider';
 import Colors from '../styles/colors';
-import MenuButton from '../components/button/MenuButton';
+import NightEffect from './components/NightEffect';
+import NightColor from './components/NightColor';
+import LightEffect from './components/LightEffect';
+import LightColor from './components/LightColor';
+import CustomColor from './components/CustomColor';
 
 interface Props {}
 
 interface State {
-  showEffect: boolean;
-  showColor: boolean;
+  showNightEffect: boolean;
+  showNightColor: boolean;
   showLightEffect: boolean;
   showLightColor: boolean;
+  showCustomColor: boolean;
 }
 class Home extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showEffect: false,
-      showColor: false,
+      showNightEffect: false,
+      showNightColor: false,
       showLightEffect: false,
       showLightColor: false,
+      showCustomColor: false,
     };
   }
 
   componentDidMount() {}
 
-  render() {
-    const { showEffect, showColor } = this.state;
+  renderStarTitle = () => {
+    const { showNightEffect, showNightColor } = this.state;
 
+    if (showNightEffect) return 'Effects';
+    if (showNightColor) return 'Colors';
+    return 'Stars';
+  };
+
+  renderStar = () => {
+    const { showNightEffect, showNightColor } = this.state;
+
+    if (showNightEffect)
+      return (
+        <NightEffect
+          onPressTwinkle={() => {
+            this.setState({ showNightEffect: false });
+          }}
+          onPressFirefly={() => {
+            this.setState({ showNightEffect: false });
+          }}
+          onPressRandom={() => {
+            this.setState({ showNightEffect: false });
+          }}
+          onPressLightning={() => {
+            this.setState({ showNightEffect: false });
+          }}
+        />
+      );
+
+    if (showNightColor)
+      return (
+        <NightColor
+          containerStyle={{ marginTop: -18 }}
+          onPress={(color: string) => {
+            this.setState({ showNightColor: false });
+          }}
+          onClose={() => this.setState({ showNightColor: false })}
+        />
+      );
+
+    return (
+      <View style={{ marginHorizontal: '10%' }}>
+        <TouchButton
+          containerStyle={{ marginVertical: 10 }}
+          iconName="StarIcon"
+          textLabel="Start Night Effects"
+          onPress={() => this.setState({ showNightEffect: true })}
+        />
+        <TouchButton
+          containerStyle={{ marginVertical: 10 }}
+          iconName="ColorStarIcon"
+          textLabel="Starry Night Colors"
+          onPress={() => this.setState({ showNightEffect: true })}
+        />
+        <TouchButton
+          containerStyle={{ marginVertical: 10 }}
+          iconName="ShootingStarIcon"
+          textLabel="Shooting Star"
+        />
+        <View>
+          <LightSwitch />
+        </View>
+      </View>
+    );
+  };
+
+  renderAmbientTitle = () => {
+    const { showLightEffect, showLightColor, showCustomColor } = this.state;
+
+    if (showLightEffect) return 'Ambient Effects';
+    if (showLightColor) return 'Ambient Colors';
+    if (showCustomColor) return 'Ambient Custom';
+    return 'Ambient Light';
+  };
+
+  renderAmbient = () => {
+    const { showLightEffect, showLightColor, showCustomColor } = this.state;
+
+    if (showLightEffect)
+      return (
+        <LightEffect
+          onPressFade={() => {
+            this.setState({ showLightEffect: false });
+          }}
+          onPressBlink={() => {
+            this.setState({ showLightEffect: false });
+          }}
+          onPressNoEffect={() => {
+            this.setState({ showLightEffect: false });
+          }}
+        />
+      );
+
+    if (showLightColor)
+      return (
+        <LightColor
+          containerStyle={{ marginTop: -18 }}
+          onPress={(color: string) => {
+            this.setState({ showLightColor: false });
+          }}
+          onClose={() => this.setState({ showLightColor: false })}
+          onCustom={() =>
+            this.setState({ showLightColor: false, showCustomColor: true })
+          }
+        />
+      );
+
+    if (showCustomColor)
+      return (
+        <CustomColor
+          containerStyle={{ marginTop: -18 }}
+          onChange={(color: string) => {
+            this.setState({ showLightColor: false });
+          }}
+          onClose={() => this.setState({ showLightColor: false })}
+        />
+      );
+
+    return (
+      <View style={{ marginHorizontal: '10%' }}>
+        <TouchButton
+          containerStyle={{ marginVertical: 10 }}
+          iconName="StarIcon"
+          textLabel="Start Night Effects"
+          onPress={() => this.setState({ showLightEffect: true })}
+        />
+        <TouchButton
+          containerStyle={{ marginVertical: 10 }}
+          iconName="StarIcon"
+          textLabel="Start Night Effects"
+          onPress={() => this.setState({ showLightColor: true })}
+        />
+        <View>
+          <LightSwitch />
+        </View>
+        <View>
+          <LightSlider textLabel="Speed" sliderValue={0} />
+          <LightSlider textLabel="Dim" sliderValue={0} />
+        </View>
+      </View>
+    );
+  };
+
+  render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <ImageBackground
@@ -67,66 +214,14 @@ class Home extends Component<Props, State> {
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
-                  Stars
+                  {this.renderStarTitle()}
                 </Text>
               </ImageBackground>
-              {showEffect ? (
-                <View
-                  style={{
-                    flex: 1,
-                  }}>
-                  <View style={{ flexDirection: 'row', flex: 1 }}>
-                    <MenuButton
-                      iconName="TwinkleIcon"
-                      textLabel="Twinkle"
-                      rightBorder
-                      bottomBorder
-                    />
-                    <MenuButton
-                      iconName="FireflyIcon"
-                      textLabel="Firefly"
-                      bottomBorder
-                    />
-                  </View>
-                  <View style={{ flexDirection: 'row', flex: 1 }}>
-                    <MenuButton
-                      iconName="RandomIcon"
-                      textLabel="Random"
-                      rightBorder
-                    />
-                    <MenuButton
-                      iconName="LightningIcon"
-                      textLabel="Lightning"
-                    />
-                  </View>
-                </View>
-              ) : (
-                <View style={{ marginHorizontal: '10%' }}>
-                  <TouchButton
-                    containerStyle={{ marginVertical: 10 }}
-                    iconName="StarIcon"
-                    textLabel="Start Night Effects"
-                    onPress={() => this.setState({ showEffect: true })}
-                  />
-                  <TouchButton
-                    containerStyle={{ marginVertical: 10 }}
-                    iconName="ColorStarIcon"
-                    textLabel="Starry Night Colors"
-                  />
-                  <TouchButton
-                    containerStyle={{ marginVertical: 10 }}
-                    iconName="ShootingStarIcon"
-                    textLabel="Shooting Star"
-                  />
-                  <View>
-                    <LightSwitch />
-                  </View>
-                </View>
-              )}
+              {this.renderStar()}
             </View>
           </View>
           <View style={styles.lightContainer}>
-            <View>
+            <View style={{ flex: 1 }}>
               <ImageBackground
                 style={{ height: 70, width: '100%' }}
                 source={LightTopBgImage}>
@@ -138,28 +233,10 @@ class Home extends Component<Props, State> {
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
-                  Ambient Light
+                  {this.renderAmbientTitle()}
                 </Text>
               </ImageBackground>
-              <View style={{ marginHorizontal: '10%' }}>
-                <TouchButton
-                  containerStyle={{ marginVertical: 10 }}
-                  iconName="StarIcon"
-                  textLabel="Start Night Effects"
-                />
-                <TouchButton
-                  containerStyle={{ marginVertical: 10 }}
-                  iconName="StarIcon"
-                  textLabel="Start Night Effects"
-                />
-                <View>
-                  <LightSwitch />
-                </View>
-                <View>
-                  <LightSlider textLabel="Speed" sliderValue={0} />
-                  <LightSlider textLabel="Dim" sliderValue={0} />
-                </View>
-              </View>
+              {this.renderAmbient()}
             </View>
           </View>
           <View style={styles.statusContainer}>
