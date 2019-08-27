@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ViewStyle, Image } from 'react-native';
 
 // svg
+import BluetoothIcon from '../../assets/svg/ble.js';
 import StarIcon from '../../assets/svg/star.js';
 import ShootingStarIcon from '../../assets/svg/shooting_star.js';
 import ColorStarIcon from '../../assets/svg/color_star.js';
@@ -17,11 +18,15 @@ import LightningIcon from '../../assets/svg/lightning.js';
 import FadeIcon from '../../assets/svg/fade.js';
 import BlinkIcon from '../../assets/svg/blink.js';
 import NoEffectIcon from '../../assets/svg/no_effect.js';
+
+import RightArrowIcon from '../../assets/svg/right_arrow.js';
+import CloseIcon from '../../assets/svg/close.js';
 // png
 
 const DEFAULT_SIZE = 30;
 
 export const COMPONENT_SVG_REGISTRY = {
+  BluetoothIcon,
   StarIcon,
   ShootingStarIcon,
   ColorStarIcon,
@@ -34,6 +39,8 @@ export const COMPONENT_SVG_REGISTRY = {
   FadeIcon,
   BlinkIcon,
   NoEffectIcon,
+  RightArrowIcon,
+  CloseIcon,
 };
 
 export const COMPONENT_PNG_REGISTRY = {};

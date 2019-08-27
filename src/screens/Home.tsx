@@ -3,17 +3,18 @@ import {
   View,
   StyleSheet,
   Text,
-  ScrollView,
-  Image,
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
   ImageBackground,
+  NativeModules,
+  NativeEventEmitter,
+  EmitterSubscription,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
-import _ from 'lodash';
+import Menu, { MenuItem } from 'react-native-material-menu';
 import { ReduxState, SettingState } from '../types/types';
 import { StatusBarHeight } from '../utils/ScreenUtil';
 import StarTopBgImage from '../assets/png/star_top_bg.png';
@@ -28,8 +29,12 @@ import NightColor from './components/NightColor';
 import LightEffect from './components/LightEffect';
 import LightColor from './components/LightColor';
 import CustomColor from './components/CustomColor';
+import BleManager, { Peripheral } from 'react-native-ble-manager';
+import ButtonIcon from '../components/Icon/ButtonIcon';
 
-interface Props {}
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+const peripherals: string[] = [];
 
 interface State {
   showNightEffect: boolean;
@@ -37,21 +42,78 @@ interface State {
   showLightEffect: boolean;
   showLightColor: boolean;
   showCustomColor: boolean;
+  scanning: boolean;
+  peripherals: string[];
 }
-class Home extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      showNightEffect: false,
-      showNightColor: false,
-      showLightEffect: false,
-      showLightColor: false,
-      showCustomColor: false,
-    };
+class Home extends Component<null, State> {
+  optionOne: Menu = null;
+  optionTwo: Menu = null;
+  optionThree: Menu = null;
+  handlerDiscover: EmitterSubscription | null = null;
+  handlerStop: EmitterSubscription | null = null;
+  handlerDisconnect: EmitterSubscription | null = null;
+
+  state = {
+    showNightEffect: false,
+    showNightColor: false,
+    showLightEffect: false,
+    showLightColor: false,
+    showCustomColor: false,
+    scanning: false,
+    peripherals: peripherals,
+  };
+
+  componentDidMount() {
+    BleManager.start({ showAlert: true }).then(() => {
+      console.log('BLuetooth initialized');
+    });
+
+    this.handlerDisconnect = bleManagerEmitter.addListener(
+      'BleManagerDisconnectPeripheral',
+      this.handleDisconnectedPeripheral,
+    );
+
+    this.retrieveConnected();
   }
 
-  componentDidMount() {}
+  // bluetooth
+  retrieveConnected = () => {
+    BleManager.getConnectedPeripherals([]).then(results => {
+      if (results.length == 0) {
+        console.log('No connected peripherals');
+      }
+      console.log(results);
+      const { peripherals } = this.state;
+      for (let i = 0; i < results.length; i++) {
+        const peripheral: Peripheral = results[i];
+        peripherals.push(peripheral.id);
+        this.setState({ peripherals });
+      }
+    });
+  };
 
+  handleDisconnectedPeripheral = (data: any) => {
+    const { peripherals } = this.state;
+    const peripheralId = data.peripheral.id;
+    if (peripheralId) {
+      const newPeripherals = peripherals.filter(
+        value => value !== peripheralId,
+      );
+      this.setState({ peripherals: newPeripherals });
+    }
+    console.log('Disconnected from ' + data.peripheral);
+  };
+
+  // dropdown
+  showOption = (option: Menu) => {
+    option.show();
+  };
+
+  hideOption = (option: Menu) => {
+    option.hide();
+  };
+
+  // render
   renderStarTitle = () => {
     const { showNightEffect, showNightColor } = this.state;
 
@@ -84,7 +146,7 @@ class Home extends Component<Props, State> {
     if (showNightColor)
       return (
         <NightColor
-          containerStyle={{ marginTop: -18 }}
+          containerStyle={{ marginTop: -22 }}
           onPress={(color: string) => {
             this.setState({ showNightColor: false });
           }}
@@ -95,22 +157,135 @@ class Home extends Component<Props, State> {
     return (
       <View style={{ marginHorizontal: '10%' }}>
         <TouchButton
-          containerStyle={{ marginVertical: 10 }}
+          containerStyle={{ marginVertical: 6 }}
           iconName="StarIcon"
           textLabel="Start Night Effects"
           onPress={() => this.setState({ showNightEffect: true })}
         />
         <TouchButton
-          containerStyle={{ marginVertical: 10 }}
+          containerStyle={{ marginVertical: 6 }}
           iconName="ColorStarIcon"
           textLabel="Starry Night Colors"
-          onPress={() => this.setState({ showNightEffect: true })}
+          onPress={() => this.setState({ showNightColor: true })}
         />
         <TouchButton
-          containerStyle={{ marginVertical: 10 }}
+          containerStyle={{
+            marginTop: 6,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
           iconName="ShootingStarIcon"
           textLabel="Shooting Star"
         />
+        <View
+          style={{
+            height: 30,
+            width: '100%',
+            backgroundColor: Colors.borderColor,
+            marginBottom: 10,
+            flexDirection: 'row',
+          }}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRightColor: Colors.white,
+              borderRightWidth: 1,
+            }}>
+            <Menu
+              ref={(ref: Menu) => (this.optionOne = ref)}
+              button={
+                <Text
+                  style={{ color: Colors.white }}
+                  onPress={() => this.showOption(this.optionOne)}>
+                  SS1
+                </Text>
+              }>
+              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+                Off
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+                1 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+                2 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+                5 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+                10 min
+              </MenuItem>
+            </Menu>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRightColor: Colors.white,
+              borderRightWidth: 1,
+            }}>
+            <Menu
+              ref={(ref: Menu) => (this.optionTwo = ref)}
+              button={
+                <Text
+                  style={{ color: Colors.white }}
+                  onPress={() => this.showOption(this.optionTwo)}>
+                  SS2
+                </Text>
+              }>
+              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+                Off
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+                1 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+                2 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+                5 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+                10 min
+              </MenuItem>
+            </Menu>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Menu
+              ref={(ref: Menu) => (this.optionThree = ref)}
+              button={
+                <Text
+                  style={{ color: Colors.white }}
+                  onPress={() => this.showOption(this.optionThree)}>
+                  SS3
+                </Text>
+              }>
+              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+                Off
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+                1 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+                2 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+                5 min
+              </MenuItem>
+              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+                10 min
+              </MenuItem>
+            </Menu>
+          </View>
+        </View>
         <View>
           <LightSwitch />
         </View>
@@ -148,7 +323,7 @@ class Home extends Component<Props, State> {
     if (showLightColor)
       return (
         <LightColor
-          containerStyle={{ marginTop: -18 }}
+          containerStyle={{ marginTop: -22 }}
           onPress={(color: string) => {
             this.setState({ showLightColor: false });
           }}
@@ -162,7 +337,7 @@ class Home extends Component<Props, State> {
     if (showCustomColor)
       return (
         <CustomColor
-          containerStyle={{ marginTop: -18 }}
+          containerStyle={{ marginTop: -22 }}
           onChange={(color: string) => {
             this.setState({ showLightColor: false });
           }}
@@ -204,7 +379,7 @@ class Home extends Component<Props, State> {
           <View style={styles.starContainer}>
             <View style={{ flex: 1 }}>
               <ImageBackground
-                style={{ height: 70, width: '100%' }}
+                style={{ height: 80, width: '100%' }}
                 source={StarTopBgImage}>
                 <Text
                   style={{
@@ -240,8 +415,12 @@ class Home extends Component<Props, State> {
             </View>
           </View>
           <View style={styles.statusContainer}>
-            <View></View>
-            <TouchableOpacity style={styles.statusButton} />
+            <View style={styles.bluetoothButton}>
+              <ButtonIcon size={60} name="BluetoothIcon" />
+            </View>
+            <TouchableOpacity style={styles.statusButton}>
+              <ButtonIcon name="RightArrowIcon" />
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </SafeAreaView>
@@ -276,6 +455,13 @@ const styles = StyleSheet.create({
   statusContainer: {
     height: '8%',
     backgroundColor: '#f0f2f9',
+  },
+  bluetoothButton: {
+    width: 60,
+    height: '100%',
+    position: 'absolute',
+    left: 10,
+    top: 0,
   },
   statusButton: {
     backgroundColor: '#e37d31',

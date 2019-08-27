@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { ViewStyle, Text, TouchableHighlight, View } from 'react-native';
+import {
+  ViewStyle,
+  Text,
+  TouchableHighlight,
+  View,
+  StyleProp,
+} from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
 import ButtonIcon from '../Icon/ButtonIcon';
@@ -7,7 +13,7 @@ import ButtonIcon from '../Icon/ButtonIcon';
 interface Props {
   onPress: () => void;
   iconName: string;
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   textLabel: string;
   buttonHeight?: number;
   fontSize?: number;
