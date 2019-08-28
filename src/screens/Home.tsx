@@ -4,19 +4,17 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  StatusBar,
   TouchableOpacity,
   ImageBackground,
-  NativeModules,
   NativeEventEmitter,
   EmitterSubscription,
+  NativeModules,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
 import Menu, { MenuItem } from 'react-native-material-menu';
 import { ReduxState, SettingState } from '../types/types';
-import { StatusBarHeight } from '../utils/ScreenUtil';
 import StarTopBgImage from '../assets/png/star_top_bg.png';
 import LightTopBgImage from '../assets/png/light_top_bg.png';
 import AppBgImage from '../assets/png/app_bg.png';
@@ -34,7 +32,6 @@ import ButtonIcon from '../components/Icon/ButtonIcon';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
-const peripherals: string[] = [];
 
 interface State {
   showNightEffect: boolean;
@@ -43,65 +40,67 @@ interface State {
   showLightColor: boolean;
   showCustomColor: boolean;
   scanning: boolean;
-  peripherals: string[];
 }
 class Home extends Component<null, State> {
   optionOne: Menu = null;
   optionTwo: Menu = null;
   optionThree: Menu = null;
-  handlerDiscover: EmitterSubscription | null = null;
-  handlerStop: EmitterSubscription | null = null;
-  handlerDisconnect: EmitterSubscription | null = null;
+  handleDiscover: EmitterSubscription;
+  connectedPeripheral: Peripheral | null;
 
-  state = {
-    showNightEffect: false,
-    showNightColor: false,
-    showLightEffect: false,
-    showLightColor: false,
-    showCustomColor: false,
-    scanning: false,
-    peripherals: peripherals,
-  };
+  constructor() {
+    super(null);
+
+    this.state = {
+      showNightEffect: false,
+      showNightColor: false,
+      showLightEffect: false,
+      showLightColor: false,
+      showCustomColor: false,
+      scanning: false,
+    };
+
+    this.connectedPeripheral = null;
+
+    this.handleDiscover = bleManagerEmitter.addListener(
+      'BleManagerDiscoverPeripheral',
+      this.handleDiscoverPeripheral,
+    );
+  }
 
   componentDidMount() {
     BleManager.start({ showAlert: true }).then(() => {
       console.log('BLuetooth initialized');
+
+      BleManager.scan([], 5, true).then(() => {
+        // Success code
+        console.log('Scan started');
+      });
     });
-
-    this.handlerDisconnect = bleManagerEmitter.addListener(
-      'BleManagerDisconnectPeripheral',
-      this.handleDisconnectedPeripheral,
-    );
-
-    this.retrieveConnected();
   }
 
   // bluetooth
-  retrieveConnected = () => {
-    BleManager.getConnectedPeripherals([]).then(results => {
-      if (results.length == 0) {
-        console.log('No connected peripherals');
-      }
-      console.log(results);
-      const { peripherals } = this.state;
-      for (let i = 0; i < results.length; i++) {
-        const peripheral: Peripheral = results[i];
-        peripherals.push(peripheral.id);
-        this.setState({ peripherals });
-      }
-    });
-  };
 
-  handleDisconnectedPeripheral = (data: any) => {
-    const { peripherals } = this.state;
-    const peripheralId = data.peripheral.id;
-    if (peripheralId) {
-      const newPeripherals = peripherals.filter(
-        value => value !== peripheralId,
-      );
-      this.setState({ peripherals: newPeripherals });
+  handleDiscoverPeripheral = async (peripheral: Peripheral) => {
+    try {
+      if (peripheral.name === 'rchi-m01') {
+        await BleManager.stopScan();
+        console.log(peripheral);
+        // connect
+        await BleManager.connect(peripheral.id);
+
+        BleManager.getConnectedPeripherals([]).then(results => {
+          if (results.length == 0) {
+            console.log('No connected peripherals');
+            this.connectedPeripheral = null;
+          }
+          console.log('Connected peripherals');
+          this.connectedPeripheral = peripheral;
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
-    console.log('Disconnected from ' + data.peripheral);
   };
 
   // dropdown
@@ -398,7 +397,7 @@ class Home extends Component<null, State> {
           <View style={styles.lightContainer}>
             <View style={{ flex: 1 }}>
               <ImageBackground
-                style={{ height: 70, width: '100%' }}
+                style={{ height: 80, width: '100%' }}
                 source={LightTopBgImage}>
                 <Text
                   style={{
