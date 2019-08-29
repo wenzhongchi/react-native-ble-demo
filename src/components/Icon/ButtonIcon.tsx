@@ -20,8 +20,9 @@ import BlinkIcon from '../../assets/svg/blink.js';
 import NoEffectIcon from '../../assets/svg/no_effect.js';
 
 import RightArrowIcon from '../../assets/svg/right_arrow.js';
-import CloseIcon from '../../assets/svg/close.js';
+
 // png
+import CloseIcon from '../../assets/png/close.png';
 
 const DEFAULT_SIZE = 30;
 
@@ -40,10 +41,11 @@ export const COMPONENT_SVG_REGISTRY = {
   BlinkIcon,
   NoEffectIcon,
   RightArrowIcon,
-  CloseIcon,
 };
 
-export const COMPONENT_PNG_REGISTRY = {};
+export const COMPONENT_PNG_REGISTRY = {
+  CloseIcon,
+};
 
 interface Props {
   color?: string;

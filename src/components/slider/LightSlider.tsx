@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  ViewStyle,
-  Text,
-  View,
-  GestureResponderEvent,
-  StyleSheet,
-} from 'react-native';
+import { ViewStyle, Text, View, StyleSheet } from 'react-native';
 import Colors from '../../styles/colors';
 import Slider from 'react-native-slider';
 
@@ -13,11 +7,11 @@ interface Props {
   containerStyle?: ViewStyle;
   textLabel: string;
   sliderValue: number;
-  minNumber?: string;
-  maxNumber?: string;
+  minNumber?: number;
+  maxNumber?: number;
   buttonHeight?: number;
   fontSize?: number;
-  onChange: (event: GestureResponderEvent) => {};
+  onChange: (value: number) => {};
 }
 
 const LightSlider = (props: Props) => {
@@ -31,7 +25,7 @@ const LightSlider = (props: Props) => {
   } = props;
 
   return (
-    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+    <View style={{ flexDirection: 'row', marginTop: 1 }}>
       <Text
         style={{
           width: 50,
@@ -60,6 +54,8 @@ const LightSlider = (props: Props) => {
         }}>
         <Slider
           value={sliderValue}
+          minimumValue={10}
+          maximumValue={100}
           onValueChange={onChange}
           trackStyle={styles.track}
           thumbStyle={styles.thumb}

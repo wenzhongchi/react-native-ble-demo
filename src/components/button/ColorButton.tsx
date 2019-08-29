@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { ViewStyle, Text, TouchableHighlight, View } from 'react-native';
+import { ViewStyle, TouchableHighlight, View } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
-import ButtonIcon from '../Icon/ButtonIcon';
 
 interface Props {
-  onPress: () => void;
+  onPressColor: (color: string) => void;
   color: string;
   containerStyle?: ViewStyle;
   buttonHeight?: number;
@@ -19,7 +18,7 @@ interface Props {
 
 const ColorButton = (props: Props) => {
   const {
-    onPress,
+    onPressColor,
     containerStyle,
     color,
     buttonHeight,
@@ -33,15 +32,15 @@ const ColorButton = (props: Props) => {
 
   const [highlight, setHighlight] = useState(false);
 
-  const topBorderWidth = highlight ? 4 : topBorder ? 1 : 0;
-  const leftBorderWidth = highlight ? 4 : leftBorder ? 1 : 0;
-  const rightBorderWidth = highlight ? 4 : rightBorder ? 1 : 0;
-  const bottomBorderWidth = highlight ? 4 : bottomBorder ? 1 : 0;
+  const topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
+  const leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
+  const rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
+  const bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
 
   return (
     <TouchableHighlight
       disabled={disabled}
-      onPress={onPress}
+      onPress={() => onPressColor(color)}
       underlayColor={Colors.borderColor}
       onShowUnderlay={() => {
         setHighlight(true);

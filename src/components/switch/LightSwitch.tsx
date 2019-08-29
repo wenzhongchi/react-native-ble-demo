@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { ViewStyle, Text, View, GestureResponderEvent } from 'react-native';
+import { ViewStyle, Text, View } from 'react-native';
 import Colors from '../../styles/colors';
 import SwitchToggle from 'react-native-switch-toggle';
 
 interface Props {
   containerStyle?: ViewStyle;
-  textLabel?: string;
   fontSize?: number;
-  onChange: (event: GestureResponderEvent) => {};
+  onChange: (switchState: boolean) => {};
 }
 
 const LightSwitch = (props: Props) => {
-  const { textLabel, fontSize, onChange } = props;
+  const { fontSize, onChange } = props;
+  const [switchState, setSwitchState] = useState(true);
 
   return (
     <View style={{ flexDirection: 'row' }}>
@@ -21,8 +21,15 @@ const LightSwitch = (props: Props) => {
           alignSelf: 'center',
           fontSize: fontSize,
           fontWeight: 'bold',
+          flexDirection: 'row',
         }}>
-        {textLabel}
+        <Text style={{ color: switchState ? Colors.textColor1 : Colors.white }}>
+          on
+        </Text>
+        <Text>/</Text>
+        <Text style={{ color: switchState ? Colors.white : Colors.textColor1 }}>
+          off
+        </Text>
       </Text>
       <View
         style={{
@@ -44,10 +51,15 @@ const LightSwitch = (props: Props) => {
             borderRadius: 19,
             backgroundColor: 'white',
           }}
+          circleColorOff="white"
+          circleColorOn="white"
           backgroundColorOn={Colors.switchColor}
           backgroundColorOff={Colors.switchColor}
-          switchOn={false}
-          onPress={onChange}
+          switchOn={switchState}
+          onPress={() => {
+            setSwitchState(!switchState);
+            onChange(switchState);
+          }}
         />
       </View>
     </View>

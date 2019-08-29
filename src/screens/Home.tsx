@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   View,
   StyleSheet,
   Text,
@@ -9,11 +10,15 @@ import {
   NativeEventEmitter,
   EmitterSubscription,
   NativeModules,
+  GestureResponderEvent,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
 import Menu, { MenuItem } from 'react-native-material-menu';
+import { stringToBytes } from 'convert-string'; // for converting string to byte array
+import bytesCounter from 'bytes-counter';
+import hexRgb from 'hex-rgb';
 import { ReduxState, SettingState } from '../types/types';
 import StarTopBgImage from '../assets/png/star_top_bg.png';
 import LightTopBgImage from '../assets/png/light_top_bg.png';
@@ -40,8 +45,10 @@ interface State {
   showLightColor: boolean;
   showCustomColor: boolean;
   scanning: boolean;
+  speedValue: number;
+  dimValue: number;
 }
-class Home extends Component<null, State> {
+class Home extends Component<{}, State> {
   optionOne: Menu = null;
   optionTwo: Menu = null;
   optionThree: Menu = null;
@@ -49,7 +56,7 @@ class Home extends Component<null, State> {
   connectedPeripheral: Peripheral | null;
 
   constructor() {
-    super(null);
+    super({});
 
     this.state = {
       showNightEffect: false,
@@ -58,6 +65,8 @@ class Home extends Component<null, State> {
       showLightColor: false,
       showCustomColor: false,
       scanning: false,
+      speedValue: 10,
+      dimValue: 10,
     };
 
     this.connectedPeripheral = null;
@@ -69,6 +78,14 @@ class Home extends Component<null, State> {
   }
 
   componentDidMount() {
+    BleManager.enableBluetooth()
+      .then(() => {
+        console.log('Bluetooth is already enabled');
+      })
+      .catch(error => {
+        Alert.alert('You need to enable bluetooth to use this app.');
+      });
+
     BleManager.start({ showAlert: true }).then(() => {
       console.log('BLuetooth initialized');
 
@@ -103,6 +120,32 @@ class Home extends Component<null, State> {
     }
   };
 
+  handleWrite = (command: string) => {
+    if (!this.connectedPeripheral) return;
+
+    const peripheralId = this.connectedPeripheral.id;
+
+    BleManager.connect(peripheralId).then(() => {
+      console.log('Connected and ready to send command');
+
+      const service = '13333333-3333-3333-3333-333333333337';
+      const bakeCharacteristic = '13333333-3333-3333-3333-333333330003';
+      const crustCharacteristic = '13333333-3333-3333-3333-333333330001';
+
+      const data = stringToBytes(command);
+      const bytes = bytesCounter.count(command);
+
+      BleManager.write(peripheralId, service, bakeCharacteristic, data, bytes)
+        .then(() => {
+          console.log('Sent ' + command);
+        })
+        .catch(error => {
+          // Failure code
+          console.log(error);
+        });
+    });
+  };
+
   // dropdown
   showOption = (option: Menu) => {
     option.show();
@@ -129,15 +172,19 @@ class Home extends Component<null, State> {
         <NightEffect
           onPressTwinkle={() => {
             this.setState({ showNightEffect: false });
+            this.handleWrite('T');
           }}
           onPressFirefly={() => {
             this.setState({ showNightEffect: false });
+            this.handleWrite('F');
           }}
           onPressRandom={() => {
             this.setState({ showNightEffect: false });
+            this.handleWrite('R');
           }}
           onPressLightning={() => {
             this.setState({ showNightEffect: false });
+            this.handleWrite('L');
           }}
         />
       );
@@ -148,6 +195,13 @@ class Home extends Component<null, State> {
           containerStyle={{ marginTop: -22 }}
           onPress={(color: string) => {
             this.setState({ showNightColor: false });
+            console.log(color);
+            const rgbColor = hexRgb(color);
+            console.log(rgbColor);
+            const command =
+              'S,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+            console.log(command);
+            this.handleWrite(command);
           }}
           onClose={() => this.setState({ showNightColor: false })}
         />
@@ -201,19 +255,39 @@ class Home extends Component<null, State> {
                   SS1
                 </Text>
               }>
-              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionOne);
+                  this.handleWrite('p');
+                }}>
                 Off
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionOne);
+                  this.handleWrite('a');
+                }}>
                 1 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionOne);
+                  this.handleWrite('b');
+                }}>
                 2 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionOne);
+                  this.handleWrite('c');
+                }}>
                 5 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionOne)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionOne);
+                  this.handleWrite('d');
+                }}>
                 10 min
               </MenuItem>
             </Menu>
@@ -231,23 +305,45 @@ class Home extends Component<null, State> {
               button={
                 <Text
                   style={{ color: Colors.white }}
-                  onPress={() => this.showOption(this.optionTwo)}>
+                  onPress={() => {
+                    this.showOption(this.optionTwo);
+                  }}>
                   SS2
                 </Text>
               }>
-              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionTwo);
+                  this.handleWrite('i');
+                }}>
                 Off
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionTwo);
+                  this.handleWrite('e');
+                }}>
                 1 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionTwo);
+                  this.handleWrite('f');
+                }}>
                 2 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionTwo);
+                  this.handleWrite('g');
+                }}>
                 5 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionTwo)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionTwo);
+                  this.handleWrite('h');
+                }}>
                 10 min
               </MenuItem>
             </Menu>
@@ -263,30 +359,63 @@ class Home extends Component<null, State> {
               button={
                 <Text
                   style={{ color: Colors.white }}
-                  onPress={() => this.showOption(this.optionThree)}>
+                  onPress={() => {
+                    this.showOption(this.optionThree);
+                  }}>
                   SS3
                 </Text>
               }>
-              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionThree);
+                  this.handleWrite('n');
+                }}>
                 Off
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionThree);
+                  this.handleWrite('j');
+                }}>
                 1 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionThree);
+                  this.handleWrite('k');
+                }}>
                 2 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionThree);
+                  this.handleWrite('l');
+                }}>
                 5 min
               </MenuItem>
-              <MenuItem onPress={() => this.hideOption(this.optionThree)}>
+              <MenuItem
+                onPress={() => {
+                  this.hideOption(this.optionThree);
+                  this.handleWrite('m');
+                }}>
                 10 min
               </MenuItem>
             </Menu>
           </View>
         </View>
         <View>
-          <LightSwitch />
+          <LightSwitch
+            onChange={(switchState: boolean) => {
+              console.log(switchState);
+              if (switchState) {
+                // off state
+                this.handleWrite('O');
+              } else {
+                // on state
+                this.handleWrite('T');
+              }
+            }}
+          />
         </View>
       </View>
     );
@@ -302,19 +431,28 @@ class Home extends Component<null, State> {
   };
 
   renderAmbient = () => {
-    const { showLightEffect, showLightColor, showCustomColor } = this.state;
+    const {
+      showLightEffect,
+      showLightColor,
+      showCustomColor,
+      speedValue,
+      dimValue,
+    } = this.state;
 
     if (showLightEffect)
       return (
         <LightEffect
           onPressFade={() => {
             this.setState({ showLightEffect: false });
+            this.handleWrite('F,');
           }}
           onPressBlink={() => {
             this.setState({ showLightEffect: false });
+            this.handleWrite('B,');
           }}
           onPressNoEffect={() => {
             this.setState({ showLightEffect: false });
+            this.handleWrite('N');
           }}
         />
       );
@@ -325,6 +463,13 @@ class Home extends Component<null, State> {
           containerStyle={{ marginTop: -22 }}
           onPress={(color: string) => {
             this.setState({ showLightColor: false });
+            console.log(color);
+            const rgbColor = hexRgb(color);
+            console.log(rgbColor);
+            const command =
+              'C,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+            console.log(command);
+            this.handleWrite(command);
           }}
           onClose={() => this.setState({ showLightColor: false })}
           onCustom={() =>
@@ -338,6 +483,7 @@ class Home extends Component<null, State> {
         <CustomColor
           containerStyle={{ marginTop: -22 }}
           onChange={(color: string) => {
+            console.log(color);
             this.setState({ showLightColor: false });
           }}
           onClose={() => this.setState({ showLightColor: false })}
@@ -359,11 +505,38 @@ class Home extends Component<null, State> {
           onPress={() => this.setState({ showLightColor: true })}
         />
         <View>
-          <LightSwitch />
+          <LightSwitch
+            onChange={(switchState: boolean) => {
+              console.log(switchState);
+              if (switchState) {
+                // off state
+                this.handleWrite('o');
+              } else {
+                // on state
+                this.handleWrite('T');
+              }
+            }}
+          />
         </View>
         <View>
-          <LightSlider textLabel="Speed" sliderValue={0} />
-          <LightSlider textLabel="Dim" sliderValue={0} />
+          <LightSlider
+            textLabel="Speed"
+            minNumber={speedValue}
+            sliderValue={10}
+            onChange={(value: number) => {
+              console.log(Math.round(value));
+              this.setState({ speedValue: Math.round(value) });
+            }}
+          />
+          <LightSlider
+            textLabel="Dim"
+            minNumber={dimValue}
+            sliderValue={10}
+            onChange={(value: number) => {
+              console.log(Math.round(value * 100));
+              this.setState({ dimValue: Math.round(value) });
+            }}
+          />
         </View>
       </View>
     );
