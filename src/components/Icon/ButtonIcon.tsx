@@ -19,10 +19,11 @@ import FadeIcon from '../../assets/svg/fade.js';
 import BlinkIcon from '../../assets/svg/blink.js';
 import NoEffectIcon from '../../assets/svg/no_effect.js';
 
-import RightArrowIcon from '../../assets/svg/right_arrow.js';
-
 // png
 import CloseIcon from '../../assets/png/close.png';
+import RightArrowIcon from '../../assets/png/right_arrow.png';
+
+import { verticalTextScale } from '../../utils/textSize';
 
 const DEFAULT_SIZE = 30;
 
@@ -40,11 +41,11 @@ export const COMPONENT_SVG_REGISTRY = {
   FadeIcon,
   BlinkIcon,
   NoEffectIcon,
-  RightArrowIcon,
 };
 
 export const COMPONENT_PNG_REGISTRY = {
   CloseIcon,
+  RightArrowIcon,
 };
 
 interface Props {
@@ -67,8 +68,8 @@ const ButtonIcon = ({ name, size, style, color, height, width }: Props) => {
 
   const iconStyle = {
     alignSelf: 'center',
-    width: actualWidth,
-    height: actualHeight,
+    width: verticalTextScale(actualWidth),
+    height: verticalTextScale(actualHeight),
   };
 
   return ComponentIcon ? (

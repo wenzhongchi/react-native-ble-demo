@@ -11,7 +11,7 @@
     "ios:release": "react-native run-ios --configuration Release",
     "android": "react-native run-android --variant=debug",
     "android:sandbox": "react-native run-android --variant=sandbox",
-    "android:release": "react-native run-android --variant=release"
+    "android:release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "bytes-counter": "^1.0.0",

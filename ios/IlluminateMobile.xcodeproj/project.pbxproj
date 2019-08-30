@@ -293,7 +293,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = VUB7RBKRAM;
+						DevelopmentTeam = TA37Q2KTTE;
 						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -633,10 +633,11 @@
 			baseConfigurationReference = C453D32C814656C20283C4B9 /* Pods-IlluminateMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = VUB7RBKRAM;
+				DEVELOPMENT_TEAM = TA37Q2KTTE;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -644,9 +645,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cleverbanc.clever.sandbox;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FSyn.ergy;
 				PRODUCT_NAME = IlluminateMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Clever Sandbox Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-ad-hoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -656,9 +657,10 @@
 			baseConfigurationReference = 8F6FF51502D55532A5533C0F /* Pods-IlluminateMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VUB7RBKRAM;
+				DEVELOPMENT_TEAM = TA37Q2KTTE;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -666,9 +668,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cleverbanc.clever.sandbox;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FSyn.ergy;
 				PRODUCT_NAME = IlluminateMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Clever Sandbox Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-ad-hoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

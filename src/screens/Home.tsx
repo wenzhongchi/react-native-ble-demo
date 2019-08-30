@@ -11,6 +11,7 @@ import {
   EmitterSubscription,
   NativeModules,
   GestureResponderEvent,
+  ScrollView,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -100,7 +101,7 @@ class Home extends Component<{}, State> {
 
   handleDiscoverPeripheral = async (peripheral: Peripheral) => {
     try {
-      if (peripheral.name === 'rchi-m01') {
+      if (peripheral.id === '74278BDA-B644-4520-8F0C-720EAF059935') {
         await BleManager.stopScan();
         console.log(peripheral);
         // connect
@@ -128,14 +129,13 @@ class Home extends Component<{}, State> {
     BleManager.connect(peripheralId).then(() => {
       console.log('Connected and ready to send command');
 
-      const service = '13333333-3333-3333-3333-333333333337';
-      const bakeCharacteristic = '13333333-3333-3333-3333-333333330003';
-      const crustCharacteristic = '13333333-3333-3333-3333-333333330001';
+      const service = '0xFFE0';
+      const characteristic = '0xFFE1';
 
       const data = stringToBytes(command);
       const bytes = bytesCounter.count(command);
 
-      BleManager.write(peripheralId, service, bakeCharacteristic, data, bytes)
+      BleManager.write(peripheralId, service, characteristic, data, bytes)
         .then(() => {
           console.log('Sent ' + command);
         })
@@ -208,7 +208,9 @@ class Home extends Component<{}, State> {
       );
 
     return (
-      <View style={{ marginHorizontal: '10%' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: '10%' }}>
         <TouchButton
           containerStyle={{ marginVertical: 6 }}
           iconName="StarIcon"
@@ -417,7 +419,7 @@ class Home extends Component<{}, State> {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
@@ -491,7 +493,9 @@ class Home extends Component<{}, State> {
       );
 
     return (
-      <View style={{ marginHorizontal: '10%' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: '10%' }}>
         <TouchButton
           containerStyle={{ marginVertical: 10 }}
           iconName="StarIcon"
@@ -538,7 +542,7 @@ class Home extends Component<{}, State> {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
@@ -642,6 +646,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ViewStyle, Text, View } from 'react-native';
 import Colors from '../../styles/colors';
 import SwitchToggle from 'react-native-switch-toggle';
+import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
   containerStyle?: ViewStyle;
@@ -68,7 +69,7 @@ const LightSwitch = (props: Props) => {
 
 LightSwitch.defaultProps = {
   textLabel: 'on/off',
-  fontSize: 22,
+  fontSize: verticalTextScale(22),
 };
 
 export default LightSwitch;

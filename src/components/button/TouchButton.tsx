@@ -9,6 +9,7 @@ import {
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
 import ButtonIcon from '../Icon/ButtonIcon';
+import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
   onPress: () => void;
@@ -90,8 +91,8 @@ const TouchButton = (props: Props) => {
 };
 
 TouchButton.defaultProps = {
-  buttonHeight: 48,
-  fontSize: 22,
+  buttonHeight: verticalTextScale(48),
+  fontSize: verticalTextScale(22),
   disabled: false,
 };
 

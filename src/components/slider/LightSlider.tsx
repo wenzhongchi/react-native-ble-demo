@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ViewStyle, Text, View, StyleSheet } from 'react-native';
 import Colors from '../../styles/colors';
 import Slider from 'react-native-slider';
+import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
   containerStyle?: ViewStyle;
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
 LightSlider.defaultProps = {
   minNumber: 0,
   maxNumber: 100,
-  fontSize: 15,
+  fontSize: verticalTextScale(15),
 };
 
 export default LightSlider;
