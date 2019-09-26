@@ -12,7 +12,7 @@ interface Props {
   maxNumber?: number;
   buttonHeight?: number;
   fontSize?: number;
-  onChange: (value: number) => {};
+  onChange: (value: number) => void;
 }
 
 const LightSlider = (props: Props) => {

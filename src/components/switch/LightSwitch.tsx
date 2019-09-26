@@ -7,7 +7,7 @@ import { verticalTextScale } from '../../utils/textSize';
 interface Props {
   containerStyle?: ViewStyle;
   fontSize?: number;
-  onChange: (switchState: boolean) => {};
+  onChange: (switchState: boolean) => void;
 }
 
 const LightSwitch = (props: Props) => {

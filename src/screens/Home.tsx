@@ -10,8 +10,9 @@ import {
   NativeEventEmitter,
   EmitterSubscription,
   NativeModules,
-  GestureResponderEvent,
+  PermissionsAndroid,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -79,12 +80,13 @@ class Home extends Component<{}, State> {
   }
 
   componentDidMount() {
+    // android only
     BleManager.enableBluetooth()
       .then(() => {
         console.log('Bluetooth is already enabled');
       })
       .catch(error => {
-        Alert.alert('You need to enable bluetooth to use this app.');
+        console.log('You need to enable bluetooth to use this app.');
       });
 
     BleManager.start({ showAlert: true }).then(() => {
@@ -95,17 +97,46 @@ class Home extends Component<{}, State> {
         console.log('Scan started');
       });
     });
+
+    if (Platform.OS === 'android' && Platform.Version >= 23) {
+      PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+      ).then(result => {
+        if (result) {
+          console.log('Permission is OK');
+        } else {
+          PermissionsAndroid.requestPermission(
+            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+          ).then(result => {
+            if (result) {
+              console.log('User accept');
+              BleManager.scan([], 5, true).then(() => {
+                // Success code
+                console.log('Scan started');
+              });
+            } else {
+              console.log('User refuse');
+            }
+          });
+        }
+      });
+    }
   }
 
   // bluetooth
 
   handleDiscoverPeripheral = async (peripheral: Peripheral) => {
     try {
-      if (peripheral.id === '74278BDA-B644-4520-8F0C-720EAF059935') {
+      if (peripheral.name === 'HMSoft') {
         await BleManager.stopScan();
         console.log(peripheral);
         // connect
         await BleManager.connect(peripheral.id);
+
+        BleManager.retrieveServices(peripheral.id).then(peripheralInfo => {
+          // Success code
+          console.log('Peripheral info:', peripheralInfo);
+        });
 
         BleManager.getConnectedPeripherals([]).then(results => {
           if (results.length == 0) {
@@ -115,6 +146,8 @@ class Home extends Component<{}, State> {
           console.log('Connected peripherals');
           this.connectedPeripheral = peripheral;
         });
+      } else {
+        console.log(peripheral.name);
       }
     } catch (err) {
       console.log(err);
@@ -126,16 +159,23 @@ class Home extends Component<{}, State> {
 
     const peripheralId = this.connectedPeripheral.id;
 
-    BleManager.connect(peripheralId).then(() => {
-      console.log('Connected and ready to send command');
+    BleManager.retrieveServices(peripheralId).then(peripheralInfo => {
+      // Success code
+      console.log('Peripheral info:', peripheralInfo);
 
-      const service = '0xFFE0';
-      const characteristic = '0xFFE1';
+      const service = 'FFE0';
+      const characteristic = 'FFE1';
 
       const data = stringToBytes(command);
       const bytes = bytesCounter.count(command);
 
-      BleManager.write(peripheralId, service, characteristic, data, bytes)
+      BleManager.writeWithoutResponse(
+        peripheralId,
+        service,
+        characteristic,
+        data,
+        bytes,
+      )
         .then(() => {
           console.log('Sent ' + command);
         })
