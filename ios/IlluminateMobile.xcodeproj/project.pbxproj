@@ -646,7 +646,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 9;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TA37Q2KTTE;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
@@ -670,7 +670,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 9;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TA37Q2KTTE;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -681,7 +682,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.FSyn.ergy;
 				PRODUCT_NAME = IlluminateMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-ad-hoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

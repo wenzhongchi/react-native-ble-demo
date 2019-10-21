@@ -8,7 +8,11 @@ interface Props {
   onPressNoEffect: () => void;
 }
 
-const LightEffect = ({ onPressFade, onPressBlink, onPressNoEffect }: Props) => {
+const AmbientEffect = ({
+  onPressFade,
+  onPressBlink,
+  onPressNoEffect,
+}: Props) => {
   return (
     <View style={{ flexDirection: 'row', flex: 1 }}>
       <MenuButton
@@ -38,4 +42,4 @@ const LightEffect = ({ onPressFade, onPressBlink, onPressNoEffect }: Props) => {
   );
 };
 
-export default LightEffect;
+export default AmbientEffect;

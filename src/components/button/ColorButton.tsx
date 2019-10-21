@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { ViewStyle, TouchableHighlight, View } from 'react-native';
+import { ViewStyle, TouchableHighlight, View, Image } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
+import RainbowEyeIcon from '../../assets/png/rainbow_eye.png';
 
 interface Props {
-  onPressColor: (color: string) => void;
-  color: string;
+  onPressColor: (color?: string) => void;
+  color?: string;
+  iconName?: string;
   containerStyle?: ViewStyle;
   buttonHeight?: number;
   buttonWidth?: number;
@@ -28,6 +30,7 @@ const ColorButton = (props: Props) => {
     leftBorder,
     rightBorder,
     bottomBorder,
+    iconName,
   } = props;
 
   const [highlight, setHighlight] = useState(false);
@@ -61,7 +64,13 @@ const ColorButton = (props: Props) => {
         },
         containerStyle,
       ]}>
-      <View style={{ flex: 1, backgroundColor: color }} />
+      {iconName ? (
+        <Image
+          style={{ flex: 1, width: '100%', height: '100%' }}
+          source={RainbowEyeIcon}></Image>
+      ) : (
+        <View style={{ flex: 1, backgroundColor: color }} />
+      )}
     </TouchableHighlight>
   );
 };

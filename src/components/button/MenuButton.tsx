@@ -3,6 +3,7 @@ import { ViewStyle, Text, TouchableHighlight, View } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
 import ButtonIcon from '../Icon/ButtonIcon';
+import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
   onPress: () => void;
@@ -13,6 +14,7 @@ interface Props {
   buttonHeight?: number;
   buttonWidth?: number;
   textLabel: string;
+  iconColor?: string;
   fontSize?: number;
   disabled?: boolean;
   leftBorder?: boolean;
@@ -37,6 +39,7 @@ const MenuButton = (props: Props) => {
     leftBorder,
     rightBorder,
     bottomBorder,
+    iconColor,
   } = props;
 
   const [textColor, setTextColor] = useState(Colors.textColor1);
@@ -80,13 +83,16 @@ const MenuButton = (props: Props) => {
             size={iconSize}
             style={{ alignSelf: 'center', marginTop: iconMarginTop }}
             name={iconName}
+            color={iconColor}
           />
           <Text
             style={{
-              marginTop: -20,
+              marginTop: -15,
               color: textColor,
               alignSelf: 'center',
-              fontSize: fontSize,
+              fontSize: fontSize
+                ? verticalTextScale(fontSize)
+                : verticalTextScale(22),
               fontWeight: 'bold',
               textAlign: 'center',
             }}>
@@ -105,6 +111,7 @@ MenuButton.defaultProps = {
   disabled: false,
   iconSize: 100,
   iconMarginTop: 10,
+  iconColor: 'white',
 };
 
 export default DebouncedButton(MenuButton);

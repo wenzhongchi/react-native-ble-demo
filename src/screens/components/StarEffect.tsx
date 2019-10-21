@@ -6,14 +6,18 @@ interface Props {
   onPressTwinkle: () => void;
   onPressFirefly: () => void;
   onPressRandom: () => void;
-  onPressLightning: () => void;
+  onPressRainDrops: () => void;
+  onPressBreeze: () => void;
+  onPressJamboree: () => void;
 }
 
-const NightEffect = ({
+const StarEffect = ({
   onPressTwinkle,
   onPressFirefly,
   onPressRandom,
-  onPressLightning,
+  onPressRainDrops,
+  onPressBreeze,
+  onPressJamboree,
 }: Props) => {
   return (
     <View
@@ -31,8 +35,15 @@ const NightEffect = ({
         <MenuButton
           iconName="FireflyIcon"
           textLabel="Firefly"
+          rightBorder
           bottomBorder
           onPress={onPressFirefly}
+        />
+        <MenuButton
+          iconName="BreezeIcon"
+          textLabel="Breeze"
+          bottomBorder
+          onPress={onPressBreeze}
         />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -43,13 +54,19 @@ const NightEffect = ({
           onPress={onPressRandom}
         />
         <MenuButton
-          iconName="LightningIcon"
-          textLabel="Lightning"
-          onPress={onPressLightning}
+          iconName="RainDropsIcon"
+          textLabel="Rain Drops"
+          rightBorder
+          onPress={onPressRainDrops}
+        />
+        <MenuButton
+          iconName="JamboreeIcon"
+          textLabel="Jamboree"
+          onPress={onPressJamboree}
         />
       </View>
     </View>
   );
 };
 
-export default NightEffect;
+export default StarEffect;

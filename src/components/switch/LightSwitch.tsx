@@ -12,7 +12,7 @@ interface Props {
 
 const LightSwitch = (props: Props) => {
   const { fontSize, onChange } = props;
-  const [switchState, setSwitchState] = useState(true);
+  const [switchState, setSwitchState] = useState(false);
 
   return (
     <View style={{ flexDirection: 'row' }}>
@@ -42,14 +42,14 @@ const LightSwitch = (props: Props) => {
         <SwitchToggle
           containerStyle={{
             width: 60,
-            height: 38,
-            borderRadius: 20,
+            height: 34,
+            borderRadius: 17,
             padding: 5,
           }}
           circleStyle={{
-            width: 28,
-            height: 28,
-            borderRadius: 19,
+            width: 24,
+            height: 24,
+            borderRadius: 17,
             backgroundColor: 'white',
           }}
           circleColorOff="white"
@@ -57,6 +57,7 @@ const LightSwitch = (props: Props) => {
           backgroundColorOn={Colors.switchColor}
           backgroundColorOff={Colors.switchColor}
           switchOn={switchState}
+          // @ts-ignore
           onPress={() => {
             setSwitchState(!switchState);
             onChange(switchState);

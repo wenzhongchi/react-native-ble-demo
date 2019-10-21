@@ -1,17 +1,15 @@
 import React from 'react';
 import { View, ViewStyle, TouchableOpacity, Text } from 'react-native';
 import ColorButton from '../../components/button/ColorButton';
-import Colors from '../../styles/colors';
 import ButtonIcon from '../../components/Icon/ButtonIcon';
 
 interface Props {
   onPress: (color: string) => void;
-  onClose: () => void;
   onCustom: () => void;
   containerStyle?: ViewStyle;
 }
 
-const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
+const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
   return (
     <View
       style={[
@@ -23,6 +21,7 @@ const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
           color="#ed2644"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
@@ -31,6 +30,7 @@ const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
         />
         <ColorButton
           color="#3bb44a"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
@@ -39,6 +39,7 @@ const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
         />
         <ColorButton
           color="#0d72b9"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
@@ -47,6 +48,7 @@ const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
         />
         <ColorButton
           color="#ffffff"
+          topBorder
           bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
@@ -154,22 +156,20 @@ const LightColor = ({ onPress, onClose, onCustom, containerStyle }: Props) => {
         }}>
         <TouchableOpacity
           onPress={onCustom}
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ alignSelf: 'center' }}>Custom</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           style={{
-            backgroundColor: Colors.textColor1,
-            width: 60,
+            flex: 1,
+            flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-          onPress={onClose}>
-          <ButtonIcon name="CloseIcon" size={25} />
+          }}>
+          <ButtonIcon name="EffectsColorIcon" color="white" />
+          <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>
+            Custom
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default LightColor;
+export default AmbientColor;

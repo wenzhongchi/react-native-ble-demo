@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import {
-  Alert,
   View,
   StyleSheet,
   Text,
   SafeAreaView,
-  TouchableOpacity,
   ImageBackground,
   NativeEventEmitter,
   EmitterSubscription,
   NativeModules,
   PermissionsAndroid,
-  ScrollView,
   Platform,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
-import Menu, { MenuItem } from 'react-native-material-menu';
-import { stringToBytes } from 'convert-string'; // for converting string to byte array
+// @ts-ignore
+import { stringToBytes } from 'convert-string';
+// @ts-ignore
 import bytesCounter from 'bytes-counter';
 import hexRgb from 'hex-rgb';
 import { ReduxState, SettingState } from '../types/types';
@@ -29,46 +29,61 @@ import TouchButton from '../components/button/TouchButton';
 import LightSwitch from '../components/switch/LightSwitch';
 import LightSlider from '../components/slider/LightSlider';
 import Colors from '../styles/colors';
-import NightEffect from './components/NightEffect';
-import NightColor from './components/NightColor';
-import LightEffect from './components/LightEffect';
-import LightColor from './components/LightColor';
+import StarEffect from './components/StarEffect';
+import StarColor from './components/StarColor';
+import AmbientEffect from './components/AmbientEffect';
+import AmbientColor from './components/AmbientColor';
 import CustomColor from './components/CustomColor';
 import BleManager, { Peripheral } from 'react-native-ble-manager';
 import ButtonIcon from '../components/Icon/ButtonIcon';
+import { ScreenHeight } from '../utils/ScreenUtil';
+import ShootingColor from './components/ShootingColor';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+interface Props {}
+
 interface State {
-  showNightEffect: boolean;
-  showNightColor: boolean;
-  showLightEffect: boolean;
-  showLightColor: boolean;
+  showStarEffect: boolean;
+  showStarColor: boolean;
+  showShootingStar: boolean;
+  showAmbientEffect: boolean;
+  showAmbientColor: boolean;
   showCustomColor: boolean;
-  scanning: boolean;
   speedValue: number;
   dimValue: number;
+  starIconName: string;
+  starColorName: string;
+  shootingColorName: string;
+  ambientIconName: string;
+  ambientColorName: string;
+  starDisabled: boolean;
+  ambientDisabled: boolean;
 }
-class Home extends Component<{}, State> {
-  optionOne: Menu = null;
-  optionTwo: Menu = null;
-  optionThree: Menu = null;
+class Home extends Component<Props, State> {
   handleDiscover: EmitterSubscription;
   connectedPeripheral: Peripheral | null;
 
-  constructor() {
-    super({});
+  constructor(props: Props) {
+    super(props);
 
     this.state = {
-      showNightEffect: false,
-      showNightColor: false,
-      showLightEffect: false,
-      showLightColor: false,
+      showStarEffect: false,
+      showStarColor: false,
+      showShootingStar: false,
+      showAmbientEffect: false,
+      showAmbientColor: false,
       showCustomColor: false,
-      scanning: false,
       speedValue: 10,
       dimValue: 10,
+      starIconName: 'StarIcon',
+      ambientIconName: 'FadeIcon',
+      starColorName: 'white',
+      shootingColorName: 'white',
+      ambientColorName: 'white',
+      starDisabled: false,
+      ambientDisabled: false,
     };
 
     this.connectedPeripheral = null;
@@ -77,6 +92,17 @@ class Home extends Component<{}, State> {
       'BleManagerDiscoverPeripheral',
       this.handleDiscoverPeripheral,
     );
+
+    bleManagerEmitter.addListener('BleManagerDidUpdateState', args => {
+      const { state } = args;
+      console.log(state);
+      if (state === 'on') {
+        BleManager.scan([], 15, true).then(() => {
+          // Success code
+          console.log('Scan started');
+        });
+      }
+    });
   }
 
   componentDidMount() {
@@ -86,13 +112,14 @@ class Home extends Component<{}, State> {
         console.log('Bluetooth is already enabled');
       })
       .catch(error => {
+        console.log(error);
         console.log('You need to enable bluetooth to use this app.');
       });
 
     BleManager.start({ showAlert: true }).then(() => {
       console.log('BLuetooth initialized');
 
-      BleManager.scan([], 5, true).then(() => {
+      BleManager.scan([], 15, true).then(() => {
         // Success code
         console.log('Scan started');
       });
@@ -110,7 +137,7 @@ class Home extends Component<{}, State> {
           ).then(result => {
             if (result) {
               console.log('User accept');
-              BleManager.scan([], 5, true).then(() => {
+              BleManager.scan([], 15, true).then(() => {
                 // Success code
                 console.log('Scan started');
               });
@@ -127,7 +154,7 @@ class Home extends Component<{}, State> {
 
   handleDiscoverPeripheral = async (peripheral: Peripheral) => {
     try {
-      if (peripheral.name === 'HMSoft') {
+      if (peripheral.name && peripheral.name.includes('starkit')) {
         await BleManager.stopScan();
         console.log(peripheral);
         // connect
@@ -145,6 +172,7 @@ class Home extends Component<{}, State> {
           }
           console.log('Connected peripherals');
           this.connectedPeripheral = peripheral;
+          Alert.alert('Connected');
         });
       } else {
         console.log(peripheral.name);
@@ -186,56 +214,62 @@ class Home extends Component<{}, State> {
     });
   };
 
-  // dropdown
-  showOption = (option: Menu) => {
-    option.show();
-  };
-
-  hideOption = (option: Menu) => {
-    option.hide();
-  };
-
   // render
   renderStarTitle = () => {
-    const { showNightEffect, showNightColor } = this.state;
+    const { showStarEffect, showStarColor } = this.state;
 
-    if (showNightEffect) return 'Effects';
-    if (showNightColor) return 'Colors';
+    if (showStarEffect) return 'Starry Night Effects';
+    if (showStarColor) return 'Starry Night Colors';
     return 'Stars';
   };
 
   renderStar = () => {
-    const { showNightEffect, showNightColor } = this.state;
+    const {
+      showStarEffect,
+      showStarColor,
+      showShootingStar,
+      starIconName,
+      starColorName,
+      shootingColorName,
+      starDisabled,
+    } = this.state;
 
-    if (showNightEffect)
+    if (showStarEffect)
       return (
-        <NightEffect
+        <StarEffect
           onPressTwinkle={() => {
-            this.setState({ showNightEffect: false });
+            this.setState({ starIconName: 'TwinkleIcon' });
             this.handleWrite('T');
           }}
           onPressFirefly={() => {
-            this.setState({ showNightEffect: false });
+            this.setState({ starIconName: 'FireflyIcon' });
             this.handleWrite('F');
           }}
           onPressRandom={() => {
-            this.setState({ showNightEffect: false });
+            this.setState({ starIconName: 'RandomIcon' });
             this.handleWrite('R');
           }}
-          onPressLightning={() => {
-            this.setState({ showNightEffect: false });
+          onPressRainDrops={() => {
+            this.setState({ starIconName: 'RainDropsIcon' });
             this.handleWrite('L');
+          }}
+          onPressBreeze={() => {
+            this.setState({ starIconName: 'BreezeIcon' });
+            this.handleWrite('Z');
+          }}
+          onPressJamboree={() => {
+            this.setState({ starIconName: 'JamboreeIcon' });
+            this.handleWrite('J');
           }}
         />
       );
 
-    if (showNightColor)
+    if (showStarColor)
       return (
-        <NightColor
-          containerStyle={{ marginTop: -22 }}
+        <StarColor
           onPress={(color: string) => {
-            this.setState({ showNightColor: false });
             console.log(color);
+            this.setState({ starColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
             const command =
@@ -243,268 +277,123 @@ class Home extends Component<{}, State> {
             console.log(command);
             this.handleWrite(command);
           }}
-          onClose={() => this.setState({ showNightColor: false })}
+        />
+      );
+
+    if (showShootingStar)
+      return (
+        <ShootingColor
+          onPress={(color: string) => {
+            console.log(color);
+            this.setState({ shootingColorName: color });
+            const rgbColor = hexRgb(color);
+            console.log(rgbColor);
+            const command =
+              'S,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+            console.log(command);
+            this.handleWrite(command);
+          }}
         />
       );
 
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{ marginHorizontal: '10%' }}>
+      <View style={{ marginHorizontal: '10%' }}>
         <TouchButton
-          containerStyle={{ marginVertical: 6 }}
-          iconName="StarIcon"
-          textLabel="Start Night Effects"
-          onPress={() => this.setState({ showNightEffect: true })}
-        />
-        <TouchButton
-          containerStyle={{ marginVertical: 6 }}
-          iconName="ColorStarIcon"
-          textLabel="Starry Night Colors"
-          onPress={() => this.setState({ showNightColor: true })}
+          containerStyle={{
+            marginVertical: 0.015 * ScreenHeight,
+            height: 0.06 * ScreenHeight,
+          }}
+          iconName={starIconName}
+          textLabel="Starry Night Effects"
+          onPress={() => this.setState({ showStarEffect: true })}
+          disabled={starDisabled}
         />
         <TouchButton
           containerStyle={{
-            marginTop: 6,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
+            marginVertical: 0.015 * ScreenHeight,
+            height: 0.06 * ScreenHeight,
+          }}
+          iconName="ColorStarIcon"
+          iconColor={starColorName}
+          textLabel="Starry Night Colors"
+          onPress={() => this.setState({ showStarColor: true })}
+          disabled={starDisabled}
+        />
+        <TouchButton
+          containerStyle={{
+            marginVertical: 0.015 * ScreenHeight,
+            height: 0.06 * ScreenHeight,
           }}
           iconName="ShootingStarIcon"
+          iconColor={shootingColorName}
           textLabel="Shooting Star"
+          onPress={() => this.setState({ showShootingStar: true })}
+          disabled={starDisabled}
         />
-        <View
-          style={{
-            height: 30,
-            width: '100%',
-            backgroundColor: Colors.borderColor,
-            marginBottom: 10,
-            flexDirection: 'row',
-          }}>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRightColor: Colors.white,
-              borderRightWidth: 1,
-            }}>
-            <Menu
-              ref={(ref: Menu) => (this.optionOne = ref)}
-              button={
-                <Text
-                  style={{ color: Colors.white }}
-                  onPress={() => this.showOption(this.optionOne)}>
-                  SS1
-                </Text>
-              }>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionOne);
-                  this.handleWrite('p');
-                }}>
-                Off
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionOne);
-                  this.handleWrite('a');
-                }}>
-                1 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionOne);
-                  this.handleWrite('b');
-                }}>
-                2 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionOne);
-                  this.handleWrite('c');
-                }}>
-                5 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionOne);
-                  this.handleWrite('d');
-                }}>
-                10 min
-              </MenuItem>
-            </Menu>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRightColor: Colors.white,
-              borderRightWidth: 1,
-            }}>
-            <Menu
-              ref={(ref: Menu) => (this.optionTwo = ref)}
-              button={
-                <Text
-                  style={{ color: Colors.white }}
-                  onPress={() => {
-                    this.showOption(this.optionTwo);
-                  }}>
-                  SS2
-                </Text>
-              }>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionTwo);
-                  this.handleWrite('i');
-                }}>
-                Off
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionTwo);
-                  this.handleWrite('e');
-                }}>
-                1 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionTwo);
-                  this.handleWrite('f');
-                }}>
-                2 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionTwo);
-                  this.handleWrite('g');
-                }}>
-                5 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionTwo);
-                  this.handleWrite('h');
-                }}>
-                10 min
-              </MenuItem>
-            </Menu>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Menu
-              ref={(ref: Menu) => (this.optionThree = ref)}
-              button={
-                <Text
-                  style={{ color: Colors.white }}
-                  onPress={() => {
-                    this.showOption(this.optionThree);
-                  }}>
-                  SS3
-                </Text>
-              }>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionThree);
-                  this.handleWrite('n');
-                }}>
-                Off
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionThree);
-                  this.handleWrite('j');
-                }}>
-                1 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionThree);
-                  this.handleWrite('k');
-                }}>
-                2 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionThree);
-                  this.handleWrite('l');
-                }}>
-                5 min
-              </MenuItem>
-              <MenuItem
-                onPress={() => {
-                  this.hideOption(this.optionThree);
-                  this.handleWrite('m');
-                }}>
-                10 min
-              </MenuItem>
-            </Menu>
-          </View>
-        </View>
-        <View>
+        <View style={{ marginTop: 5, height: 40 }}>
           <LightSwitch
             onChange={(switchState: boolean) => {
               console.log(switchState);
               if (switchState) {
-                // off state
-                this.handleWrite('O');
-              } else {
                 // on state
+                this.setState({ starDisabled: false });
                 this.handleWrite('T');
+              } else {
+                // off state
+                this.setState({ starDisabled: true });
+                this.handleWrite('O');
               }
             }}
           />
         </View>
-      </ScrollView>
+      </View>
     );
   };
 
   renderAmbientTitle = () => {
-    const { showLightEffect, showLightColor, showCustomColor } = this.state;
+    const { showAmbientEffect, showAmbientColor, showCustomColor } = this.state;
 
-    if (showLightEffect) return 'Ambient Effects';
-    if (showLightColor) return 'Ambient Colors';
+    if (showAmbientEffect) return 'Ambient Light Effects';
+    if (showAmbientColor) return 'Ambient Light Colors';
     if (showCustomColor) return 'Ambient Custom';
     return 'Ambient Light';
   };
 
   renderAmbient = () => {
     const {
-      showLightEffect,
-      showLightColor,
+      showAmbientEffect,
+      showAmbientColor,
       showCustomColor,
       speedValue,
       dimValue,
+      ambientIconName,
+      ambientColorName,
+      ambientDisabled,
     } = this.state;
 
-    if (showLightEffect)
+    if (showAmbientEffect)
       return (
-        <LightEffect
+        <AmbientEffect
           onPressFade={() => {
-            this.setState({ showLightEffect: false });
+            this.setState({ ambientIconName: 'FadeIcon' });
             this.handleWrite('F,');
           }}
           onPressBlink={() => {
-            this.setState({ showLightEffect: false });
+            this.setState({ ambientIconName: 'BlinkIcon' });
             this.handleWrite('B,');
           }}
           onPressNoEffect={() => {
-            this.setState({ showLightEffect: false });
+            this.setState({ ambientIconName: 'NoEffectIcon' });
             this.handleWrite('N');
           }}
         />
       );
 
-    if (showLightColor)
+    if (showAmbientColor)
       return (
-        <LightColor
-          containerStyle={{ marginTop: -22 }}
+        <AmbientColor
           onPress={(color: string) => {
-            this.setState({ showLightColor: false });
+            this.setState({ ambientColorName: color });
             console.log(color);
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
@@ -513,9 +402,8 @@ class Home extends Component<{}, State> {
             console.log(command);
             this.handleWrite(command);
           }}
-          onClose={() => this.setState({ showLightColor: false })}
           onCustom={() =>
-            this.setState({ showLightColor: false, showCustomColor: true })
+            this.setState({ showAmbientColor: false, showCustomColor: true })
           }
         />
       );
@@ -523,40 +411,41 @@ class Home extends Component<{}, State> {
     if (showCustomColor)
       return (
         <CustomColor
-          containerStyle={{ marginTop: -22 }}
           onChange={(color: string) => {
             console.log(color);
-            this.setState({ showLightColor: false });
+            this.setState({ ambientColorName: color });
           }}
-          onClose={() => this.setState({ showLightColor: false })}
         />
       );
 
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{ marginHorizontal: '10%' }}>
+      <View style={{ marginHorizontal: '10%' }}>
         <TouchButton
-          containerStyle={{ marginVertical: 10 }}
-          iconName="StarIcon"
-          textLabel="Start Night Effects"
-          onPress={() => this.setState({ showLightEffect: true })}
+          containerStyle={{ marginVertical: 6, height: 0.05 * ScreenHeight }}
+          iconName={ambientIconName}
+          textLabel="Ambient Light Effects"
+          onPress={() => this.setState({ showAmbientEffect: true })}
+          disabled={ambientDisabled}
         />
         <TouchButton
-          containerStyle={{ marginVertical: 10 }}
-          iconName="StarIcon"
-          textLabel="Start Night Effects"
-          onPress={() => this.setState({ showLightColor: true })}
+          containerStyle={{ marginVertical: 6, height: 0.05 * ScreenHeight }}
+          iconName="EffectsColorIcon"
+          iconColor={ambientColorName}
+          textLabel="Ambient Light Colors"
+          onPress={() => this.setState({ showAmbientColor: true })}
+          disabled={ambientDisabled}
         />
         <View>
           <LightSwitch
             onChange={(switchState: boolean) => {
               console.log(switchState);
               if (switchState) {
-                // off state
+                // on state
+                this.setState({ ambientDisabled: false });
                 this.handleWrite('o');
               } else {
-                // on state
+                // off state
+                this.setState({ ambientDisabled: true });
                 this.handleWrite('T');
               }
             }}
@@ -582,11 +471,20 @@ class Home extends Component<{}, State> {
             }}
           />
         </View>
-      </ScrollView>
+      </View>
     );
   };
 
   render() {
+    const {
+      showStarEffect,
+      showStarColor,
+      showShootingStar,
+      showAmbientEffect,
+      showAmbientColor,
+      showCustomColor,
+    } = this.state;
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <ImageBackground
@@ -595,18 +493,41 @@ class Home extends Component<{}, State> {
           <View style={styles.starContainer}>
             <View style={{ flex: 1 }}>
               <ImageBackground
-                style={{ height: 80, width: '100%' }}
+                style={{ height: 45, width: '100%' }}
                 source={StarTopBgImage}>
                 <Text
                   style={{
                     alignSelf: 'center',
-                    marginTop: 10,
-                    fontSize: 25,
+                    marginTop: 8,
+                    fontSize: 22,
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
                   {this.renderStarTitle()}
                 </Text>
+                {(showStarEffect || showStarColor || showShootingStar) && (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 20,
+                      top: 15,
+                    }}
+                    onPress={() =>
+                      this.setState({
+                        showStarColor: false,
+                        showStarEffect: false,
+                        showShootingStar: false,
+                      })
+                    }>
+                    <ButtonIcon
+                      name="CloseIcon"
+                      size={20}
+                      style={{
+                        alignSelf: 'center',
+                      }}
+                    />
+                  </TouchableOpacity>
+                )}
               </ImageBackground>
               {this.renderStar()}
             </View>
@@ -614,29 +535,54 @@ class Home extends Component<{}, State> {
           <View style={styles.lightContainer}>
             <View style={{ flex: 1 }}>
               <ImageBackground
-                style={{ height: 80, width: '100%' }}
+                style={{ height: 45, width: '100%' }}
                 source={LightTopBgImage}>
                 <Text
                   style={{
                     alignSelf: 'center',
-                    marginTop: 10,
+                    marginTop: 8,
                     fontSize: 25,
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
                   {this.renderAmbientTitle()}
                 </Text>
+                {(showAmbientEffect || showAmbientColor || showCustomColor) && (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 20,
+                      top: 15,
+                    }}
+                    onPress={() =>
+                      this.setState({
+                        showAmbientEffect: false,
+                        showAmbientColor: false,
+                        showCustomColor: false,
+                      })
+                    }>
+                    <ButtonIcon
+                      name="CloseIcon"
+                      size={20}
+                      style={{
+                        alignSelf: 'center',
+                      }}
+                    />
+                  </TouchableOpacity>
+                )}
               </ImageBackground>
               {this.renderAmbient()}
             </View>
           </View>
           <View style={styles.statusContainer}>
             <View style={styles.bluetoothButton}>
-              <ButtonIcon size={60} name="BluetoothIcon" />
+              <ButtonIcon
+                disableScale
+                size={50}
+                name="BluetoothIcon"
+                color={this.connectedPeripheral ? 'orange' : 'gray'}
+              />
             </View>
-            <TouchableOpacity style={styles.statusButton}>
-              <ButtonIcon name="RightArrowIcon" />
-            </TouchableOpacity>
           </View>
         </ImageBackground>
       </SafeAreaView>
@@ -659,7 +605,6 @@ const mapDispatchToProps = (
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    // backgroundColor: '#e37d31',
   },
   starContainer: {
     height: '46%',
@@ -669,25 +614,15 @@ const styles = StyleSheet.create({
     height: '46%',
   },
   statusContainer: {
-    height: '8%',
+    height: 50,
     backgroundColor: '#f0f2f9',
   },
   bluetoothButton: {
-    width: 60,
+    width: 50,
     height: '100%',
     position: 'absolute',
     left: 10,
     top: 0,
-  },
-  statusButton: {
-    backgroundColor: '#e37d31',
-    width: 60,
-    height: '100%',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

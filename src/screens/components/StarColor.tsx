@@ -1,17 +1,13 @@
 import React from 'react';
-import { View, ViewStyle, TouchableOpacity, Image } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import ColorButton from '../../components/button/ColorButton';
-import Colors from '../../styles/colors';
-import CloseIcon from '../../assets/png/close.png';
-import ButtonIcon from '../../components/Icon/ButtonIcon';
 
 interface Props {
   onPress: (color: string) => void;
-  onClose: () => void;
   containerStyle?: ViewStyle;
 }
 
-const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
+const StarColor = ({ onPress, containerStyle }: Props) => {
   return (
     <View
       style={[
@@ -23,6 +19,7 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
           color="#ed2644"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
@@ -31,6 +28,7 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
         />
         <ColorButton
           color="#3bb44a"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
@@ -39,13 +37,14 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
         />
         <ColorButton
           color="#0d72b9"
+          topBorder
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#ffffff" bottomBorder />
+        <ColorButton color="#ffffff" topBorder bottomBorder />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
@@ -72,7 +71,13 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#fbf7c8" bottomBorder />
+        <ColorButton
+          color="#fbf7c8"
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
+          }}
+        />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
@@ -99,7 +104,13 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#f9f297" bottomBorder />
+        <ColorButton
+          color="#f9f297"
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
+          }}
+        />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
@@ -126,7 +137,13 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#fff181" bottomBorder />
+        <ColorButton
+          color="#fff181"
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
+          }}
+        />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
@@ -153,26 +170,16 @@ const NightColor = ({ onPress, onClose, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#ed2644" bottomBorder />
-      </View>
-      <View style={{ flexDirection: 'row', flex: 1 }}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: Colors.textColor1,
-            width: 60,
-            height: '100%',
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
+        <ColorButton
+          iconName="RainbowEyeIcon"
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
           }}
-          onPress={onClose}>
-          <ButtonIcon name="CloseIcon" size={25} />
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
 };
 
-export default NightColor;
+export default StarColor;

@@ -14,6 +14,7 @@ import { verticalTextScale } from '../../utils/textSize';
 interface Props {
   onPress: () => void;
   iconName: string;
+  iconColor?: string;
   containerStyle?: StyleProp<ViewStyle>;
   textLabel: string;
   buttonHeight?: number;
@@ -30,6 +31,7 @@ const TouchButton = (props: Props) => {
     textLabel,
     fontSize,
     disabled,
+    iconColor,
   } = props;
 
   const [textColor, setTextColor] = useState(Colors.textColor1);
@@ -62,18 +64,18 @@ const TouchButton = (props: Props) => {
         <View
           style={{
             width: 40,
+            height: '100%',
             borderRightWidth: 2,
             borderRightColor: lineColor,
-            marginTop: 4,
-            marginBottom: 4,
             marginRight: 20,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
           <ButtonIcon
-            size={40}
-            style={{ alignSelf: 'center', marginBottom: 5 }}
+            size={37}
+            style={{ alignSelf: 'center' }}
             name={iconName}
+            color={iconColor}
           />
         </View>
         <Text
@@ -94,6 +96,7 @@ TouchButton.defaultProps = {
   buttonHeight: verticalTextScale(48),
   fontSize: verticalTextScale(22),
   disabled: false,
+  iconColor: 'white',
 };
 
 export default DebouncedButton(TouchButton);

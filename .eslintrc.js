@@ -30,9 +30,10 @@ module.exports = {
         variables: false,
       },
     ],
-    '@typescript-eslint/camelcase': [2, {properties: 'never'}],
+    '@typescript-eslint/camelcase': [2, { properties: 'never' }],
     'react-native/no-unused-styles': 2,
     'no-console': 'off',
     'react/display-name': 'off',
+    '@typescript-eslint/ban-ts-ignore': 0,
   },
 };
