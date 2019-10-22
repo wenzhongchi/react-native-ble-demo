@@ -25,6 +25,9 @@ import NoEffectIcon from '../../assets/svg/no_effect.js';
 import CloseIcon from '../../assets/png/close.png';
 import RightArrowIcon from '../../assets/png/right_arrow.png';
 import RainbowEyeIcon from '../../assets/png/rainbow_eye.png';
+import RainbowIcon from '../../assets/png/rainbow.png';
+import RainbowLoadIcon from '../../assets/png/rainbow_load.png';
+import RainbowLightIcon from '../../assets/png/rainbow_light.png';
 
 import { verticalTextScale } from '../../utils/textSize';
 
@@ -52,6 +55,9 @@ export const COMPONENT_PNG_REGISTRY = {
   CloseIcon,
   RightArrowIcon,
   RainbowEyeIcon,
+  RainbowIcon,
+  RainbowLoadIcon,
+  RainbowLightIcon,
 };
 
 interface Props {
@@ -90,7 +96,11 @@ const ButtonIcon = ({
     <ComponentIcon color={color} style={[iconStyle, style]} />
   ) : (
     // @ts-ignore
-    <Image source={ImageSource} style={[iconStyle, style]} />
+    <Image
+      resizeMode="contain"
+      source={ImageSource}
+      style={[iconStyle, style]}
+    />
   );
 };
 

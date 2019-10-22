@@ -41,15 +41,15 @@ const LightSwitch = (props: Props) => {
         }}>
         <SwitchToggle
           containerStyle={{
-            width: 60,
-            height: 34,
+            width: 55,
+            height: 30,
             borderRadius: 17,
             padding: 5,
           }}
           circleStyle={{
-            width: 24,
-            height: 24,
-            borderRadius: 17,
+            width: 20,
+            height: 20,
+            borderRadius: 10,
             backgroundColor: 'white',
           }}
           circleColorOff="white"

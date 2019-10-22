@@ -44,7 +44,14 @@ const StarColor = ({ onPress, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#ffffff" topBorder bottomBorder />
+        <ColorButton
+          color="#ffffff"
+          topBorder
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
+          }}
+        />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
@@ -147,34 +154,34 @@ const StarColor = ({ onPress, containerStyle }: Props) => {
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          color="#ed2644"
+          iconName="RainbowIcon"
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress('Rainbow');
           }}
         />
         <ColorButton
-          color="#ed2644"
+          iconName="RainbowLightIcon"
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress('RainbowLight');
           }}
         />
         <ColorButton
-          color="#ed2644"
+          iconName="RainbowLoadIcon"
           rightBorder
           bottomBorder
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress('RainbowLoad');
           }}
         />
         <ColorButton
           iconName="RainbowEyeIcon"
           bottomBorder
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress('RainbowEye');
           }}
         />
       </View>

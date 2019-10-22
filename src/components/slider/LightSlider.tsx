@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ViewStyle, Text, View, StyleSheet } from 'react-native';
 import Colors from '../../styles/colors';
 import Slider from 'react-native-slider';
-import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
   containerStyle?: ViewStyle;
@@ -13,6 +12,7 @@ interface Props {
   buttonHeight?: number;
   fontSize?: number;
   onChange: (value: number) => void;
+  disabled: boolean;
 }
 
 const LightSlider = (props: Props) => {
@@ -23,14 +23,15 @@ const LightSlider = (props: Props) => {
     minNumber,
     maxNumber,
     sliderValue,
+    disabled,
   } = props;
 
   return (
-    <View style={{ flexDirection: 'row', marginTop: 1 }}>
+    <View style={{ flexDirection: 'row', marginTop: 0 }}>
       <Text
         style={{
-          width: 50,
-          color: Colors.textColor3,
+          width: 60,
+          color: Colors.white,
           alignSelf: 'center',
           fontSize: fontSize,
           fontWeight: 'bold',
@@ -40,7 +41,7 @@ const LightSlider = (props: Props) => {
       </Text>
       <Text
         style={{
-          color: Colors.textColor3,
+          color: Colors.white,
           alignSelf: 'center',
           fontSize: fontSize,
           fontWeight: 'bold',
@@ -54,8 +55,9 @@ const LightSlider = (props: Props) => {
           marginRight: 10,
         }}>
         <Slider
+          disabled={disabled}
           value={sliderValue}
-          minimumValue={10}
+          minimumValue={0}
           maximumValue={100}
           onValueChange={onChange}
           trackStyle={styles.track}
@@ -64,7 +66,7 @@ const LightSlider = (props: Props) => {
       </View>
       <Text
         style={{
-          color: Colors.textColor3,
+          color: Colors.white,
           alignSelf: 'center',
           fontSize: fontSize,
           fontWeight: 'bold',
@@ -82,9 +84,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   thumb: {
-    width: 24,
-    height: 24,
-    borderRadius: 24 / 2,
+    width: 20,
+    height: 20,
+    borderRadius: 20 / 2,
     backgroundColor: Colors.sliderThumbColor,
     borderColor: Colors.white,
     borderWidth: 2,
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
 LightSlider.defaultProps = {
   minNumber: 0,
   maxNumber: 100,
-  fontSize: verticalTextScale(15),
+  fontSize: 15,
 };
 
 export default LightSlider;

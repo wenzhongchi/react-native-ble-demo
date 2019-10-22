@@ -51,8 +51,10 @@ interface State {
   showAmbientEffect: boolean;
   showAmbientColor: boolean;
   showCustomColor: boolean;
-  speedValue: number;
-  dimValue: number;
+  ambientSpeedValue: number;
+  ambientDimValue: number;
+  starDimValue: number;
+  shootingStarValue: number;
   starIconName: string;
   starColorName: string;
   shootingColorName: string;
@@ -60,6 +62,7 @@ interface State {
   ambientColorName: string;
   starDisabled: boolean;
   ambientDisabled: boolean;
+  selectedShootingMode: string;
 }
 class Home extends Component<Props, State> {
   handleDiscover: EmitterSubscription;
@@ -75,8 +78,10 @@ class Home extends Component<Props, State> {
       showAmbientEffect: false,
       showAmbientColor: false,
       showCustomColor: false,
-      speedValue: 10,
-      dimValue: 10,
+      ambientSpeedValue: 0,
+      ambientDimValue: 0,
+      starDimValue: 0,
+      shootingStarValue: 0,
       starIconName: 'StarIcon',
       ambientIconName: 'FadeIcon',
       starColorName: 'white',
@@ -84,6 +89,7 @@ class Home extends Component<Props, State> {
       ambientColorName: 'white',
       starDisabled: false,
       ambientDisabled: false,
+      selectedShootingMode: '1',
     };
 
     this.connectedPeripheral = null;
@@ -119,10 +125,10 @@ class Home extends Component<Props, State> {
     BleManager.start({ showAlert: true }).then(() => {
       console.log('BLuetooth initialized');
 
-      BleManager.scan([], 15, true).then(() => {
-        // Success code
-        console.log('Scan started');
-      });
+      // BleManager.scan([], 15, true).then(() => {
+      //   // Success code
+      //   console.log('Scan started');
+      // });
     });
 
     if (Platform.OS === 'android' && Platform.Version >= 23) {
@@ -232,6 +238,9 @@ class Home extends Component<Props, State> {
       starColorName,
       shootingColorName,
       starDisabled,
+      starDimValue,
+      selectedShootingMode,
+      shootingStarValue,
     } = this.state;
 
     if (showStarEffect)
@@ -251,11 +260,11 @@ class Home extends Component<Props, State> {
           }}
           onPressRainDrops={() => {
             this.setState({ starIconName: 'RainDropsIcon' });
-            this.handleWrite('L');
+            this.handleWrite('D');
           }}
           onPressBreeze={() => {
             this.setState({ starIconName: 'BreezeIcon' });
-            this.handleWrite('Z');
+            this.handleWrite('B');
           }}
           onPressJamboree={() => {
             this.setState({ starIconName: 'JamboreeIcon' });
@@ -269,11 +278,35 @@ class Home extends Component<Props, State> {
         <StarColor
           onPress={(color: string) => {
             console.log(color);
+            if (color === 'Rainbow') {
+              this.setState({ starColorName: 'red' });
+              this.handleWrite('w');
+              return;
+            }
+
+            if (color === 'RainbowLight') {
+              this.setState({ starColorName: 'blue' });
+              this.handleWrite('f');
+              return;
+            }
+
+            if (color === 'RainbowLoad') {
+              this.setState({ starColorName: 'green' });
+              this.handleWrite('r');
+              return;
+            }
+
+            if (color === 'RainbowEye') {
+              this.setState({ starColorName: 'purple' });
+              this.handleWrite('b');
+              return;
+            }
+
             this.setState({ starColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
             const command =
-              'S,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+              'c,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
             console.log(command);
             this.handleWrite(command);
           }}
@@ -283,15 +316,35 @@ class Home extends Component<Props, State> {
     if (showShootingStar)
       return (
         <ShootingColor
+          selectedMode={selectedShootingMode}
           onPress={(color: string) => {
             console.log(color);
             this.setState({ shootingColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
             const command =
-              'S,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+              'S,' +
+              selectedShootingMode +
+              ',' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              shootingStarValue;
             console.log(command);
             this.handleWrite(command);
+          }}
+          onPressText={(text: string) => {
+            console.log(text);
+            this.setState({ selectedShootingMode: text });
+          }}
+          sliderValue={0}
+          onChange={(value: number) => {
+            console.log(Math.round(value));
+            this.setState({ starDimValue: Math.round(value) });
+            this.handleWrite('D,' + Math.round(value));
           }}
         />
       );
@@ -346,6 +399,18 @@ class Home extends Component<Props, State> {
             }}
           />
         </View>
+        <View>
+          <LightSlider
+            disabled={starDisabled}
+            textLabel="Dim"
+            minNumber={starDimValue}
+            sliderValue={shootingStarValue}
+            onChange={(value: number) => {
+              console.log(Math.round(value));
+              this.setState({ shootingStarValue: Math.round(value) });
+            }}
+          />
+        </View>
       </View>
     );
   };
@@ -364,8 +429,8 @@ class Home extends Component<Props, State> {
       showAmbientEffect,
       showAmbientColor,
       showCustomColor,
-      speedValue,
-      dimValue,
+      ambientDimValue,
+      ambientSpeedValue,
       ambientIconName,
       ambientColorName,
       ambientDisabled,
@@ -376,15 +441,15 @@ class Home extends Component<Props, State> {
         <AmbientEffect
           onPressFade={() => {
             this.setState({ ambientIconName: 'FadeIcon' });
-            this.handleWrite('F,');
+            this.handleWrite('e,' + ambientSpeedValue);
           }}
           onPressBlink={() => {
             this.setState({ ambientIconName: 'BlinkIcon' });
-            this.handleWrite('B,');
+            this.handleWrite('k,' + ambientSpeedValue);
           }}
           onPressNoEffect={() => {
             this.setState({ ambientIconName: 'NoEffectIcon' });
-            this.handleWrite('N');
+            this.handleWrite('n');
           }}
         />
       );
@@ -398,7 +463,7 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
             const command =
-              'C,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+              'A,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
             console.log(command);
             this.handleWrite(command);
           }}
@@ -412,8 +477,14 @@ class Home extends Component<Props, State> {
       return (
         <CustomColor
           onChange={(color: string) => {
-            console.log(color);
             this.setState({ ambientColorName: color });
+            console.log(color);
+            const rgbColor = hexRgb(color);
+            console.log(rgbColor);
+            const command =
+              'A,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+            console.log(command);
+            this.handleWrite(command);
           }}
         />
       );
@@ -421,14 +492,20 @@ class Home extends Component<Props, State> {
     return (
       <View style={{ marginHorizontal: '10%' }}>
         <TouchButton
-          containerStyle={{ marginVertical: 6, height: 0.05 * ScreenHeight }}
+          containerStyle={{
+            marginVertical: 0.015 * ScreenHeight,
+            height: 0.055 * ScreenHeight,
+          }}
           iconName={ambientIconName}
           textLabel="Ambient Light Effects"
           onPress={() => this.setState({ showAmbientEffect: true })}
           disabled={ambientDisabled}
         />
         <TouchButton
-          containerStyle={{ marginVertical: 6, height: 0.05 * ScreenHeight }}
+          containerStyle={{
+            marginVertical: 0.015 * ScreenHeight,
+            height: 0.055 * ScreenHeight,
+          }}
           iconName="EffectsColorIcon"
           iconColor={ambientColorName}
           textLabel="Ambient Light Colors"
@@ -442,32 +519,36 @@ class Home extends Component<Props, State> {
               if (switchState) {
                 // on state
                 this.setState({ ambientDisabled: false });
-                this.handleWrite('o');
+                this.handleWrite('A,0,0,255');
               } else {
                 // off state
                 this.setState({ ambientDisabled: true });
-                this.handleWrite('T');
+                this.handleWrite('n');
               }
             }}
           />
         </View>
-        <View>
+        <View style={{ marginTop: 2 }}>
           <LightSlider
+            disabled={ambientDisabled}
             textLabel="Speed"
-            minNumber={speedValue}
-            sliderValue={10}
+            minNumber={ambientSpeedValue}
+            sliderValue={0}
             onChange={(value: number) => {
               console.log(Math.round(value));
-              this.setState({ speedValue: Math.round(value) });
+              this.setState({ ambientSpeedValue: Math.round(value) });
+              this.handleWrite('s,' + Math.round(value));
             }}
           />
           <LightSlider
+            disabled={ambientDisabled}
             textLabel="Dim"
-            minNumber={dimValue}
-            sliderValue={10}
+            minNumber={ambientDimValue}
+            sliderValue={0}
             onChange={(value: number) => {
               console.log(Math.round(value * 100));
-              this.setState({ dimValue: Math.round(value) });
+              this.setState({ ambientDimValue: Math.round(value) });
+              this.handleWrite('d,' + Math.round(value));
             }}
           />
         </View>
@@ -498,8 +579,8 @@ class Home extends Component<Props, State> {
                 <Text
                   style={{
                     alignSelf: 'center',
-                    marginTop: 8,
-                    fontSize: 22,
+                    marginTop: 10,
+                    fontSize: 20,
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
@@ -540,8 +621,8 @@ class Home extends Component<Props, State> {
                 <Text
                   style={{
                     alignSelf: 'center',
-                    marginTop: 8,
-                    fontSize: 25,
+                    marginTop: 10,
+                    fontSize: 20,
                     fontWeight: 'bold',
                     color: Colors.white,
                   }}>
@@ -574,16 +655,6 @@ class Home extends Component<Props, State> {
               {this.renderAmbient()}
             </View>
           </View>
-          <View style={styles.statusContainer}>
-            <View style={styles.bluetoothButton}>
-              <ButtonIcon
-                disableScale
-                size={50}
-                name="BluetoothIcon"
-                color={this.connectedPeripheral ? 'orange' : 'gray'}
-              />
-            </View>
-          </View>
         </ImageBackground>
       </SafeAreaView>
     );
@@ -612,17 +683,6 @@ const styles = StyleSheet.create({
   },
   lightContainer: {
     height: '46%',
-  },
-  statusContainer: {
-    height: 50,
-    backgroundColor: '#f0f2f9',
-  },
-  bluetoothButton: {
-    width: 50,
-    height: '100%',
-    position: 'absolute',
-    left: 10,
-    top: 0,
   },
 });
 

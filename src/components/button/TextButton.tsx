@@ -1,49 +1,56 @@
 import React, { useState } from 'react';
-import { ViewStyle, TouchableHighlight, View } from 'react-native';
+import { ViewStyle, TouchableHighlight, View, Text } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
-import ButtonIcon from '../Icon/ButtonIcon';
+import { verticalTextScale } from '../../utils/textSize';
 
 interface Props {
-  onPressColor: (color?: string) => void;
-  color?: string;
-  iconName?: string;
+  onPressText: (text?: string) => void;
+  text?: string;
   containerStyle?: ViewStyle;
   buttonHeight?: number;
   buttonWidth?: number;
   disabled?: boolean;
+  selected: boolean;
   leftBorder?: boolean;
   bottomBorder?: boolean;
   topBorder?: boolean;
   rightBorder?: boolean;
 }
 
-const ColorButton = (props: Props) => {
+const TextButton = (props: Props) => {
   const {
-    onPressColor,
+    onPressText,
     containerStyle,
-    color,
+    text,
     buttonHeight,
     buttonWidth,
     disabled,
+    selected,
     topBorder,
     leftBorder,
     rightBorder,
     bottomBorder,
-    iconName,
   } = props;
 
   const [highlight, setHighlight] = useState(false);
 
-  const topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
-  const leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
-  const rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
-  const bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
+  let topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
+  let leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
+  let rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
+  let bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
+
+  if (selected) {
+    topBorderWidth = 2;
+    leftBorderWidth = 2;
+    rightBorderWidth = 2;
+    bottomBorderWidth = 2;
+  }
 
   return (
     <TouchableHighlight
       disabled={disabled}
-      onPress={() => onPressColor(color)}
+      onPress={() => onPressText(text)}
       underlayColor={Colors.borderColor}
       onShowUnderlay={() => {
         setHighlight(true);
@@ -61,26 +68,30 @@ const ColorButton = (props: Props) => {
           borderRightWidth: rightBorderWidth,
           borderBottomWidth: bottomBorderWidth,
           borderColor: Colors.white,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: selected ? Colors.borderColor : Colors.borderColor1,
         },
         containerStyle,
       ]}>
-      {iconName ? (
-        <ButtonIcon
-          name={iconName}
-          style={{ flex: 1, width: '100%', height: '100%' }}
-        />
-      ) : (
-        <View style={{ flex: 1, backgroundColor: color }} />
-      )}
+      <Text
+        style={{
+          color: Colors.white,
+          alignSelf: 'center',
+          fontSize: verticalTextScale(26),
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }}>
+        {text}
+      </Text>
     </TouchableHighlight>
   );
 };
 
-ColorButton.defaultProps = {
+TextButton.defaultProps = {
   buttonHeight: '100%',
   buttonWidth: '25%',
-  fontSize: 22,
   disabled: false,
 };
 
-export default DebouncedButton(ColorButton);
+export default DebouncedButton(TextButton);

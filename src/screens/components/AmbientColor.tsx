@@ -113,7 +113,13 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
             onPress(color);
           }}
         />
-        <ColorButton color="#f9f297" bottomBorder />
+        <ColorButton
+          color="#f9f297"
+          bottomBorder
+          onPressColor={(color: string) => {
+            onPress(color);
+          }}
+        />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
