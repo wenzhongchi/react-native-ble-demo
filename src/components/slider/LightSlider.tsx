@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewStyle, Text, View, StyleSheet } from 'react-native';
+import { ViewStyle, Text, View } from 'react-native';
 import Colors from '../../styles/colors';
 import Slider from 'react-native-slider';
 
@@ -60,8 +60,22 @@ const LightSlider = (props: Props) => {
           minimumValue={0}
           maximumValue={100}
           onValueChange={onChange}
-          trackStyle={styles.track}
-          thumbStyle={styles.thumb}
+          step={1}
+          trackStyle={{
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: disabled ? Colors.disabled : Colors.white,
+          }}
+          thumbStyle={{
+            width: 20,
+            height: 20,
+            borderRadius: 20 / 2,
+            backgroundColor: disabled
+              ? Colors.disabled
+              : Colors.sliderThumbColor,
+            borderColor: Colors.white,
+            borderWidth: 2,
+          }}
         />
       </View>
       <Text
@@ -76,22 +90,6 @@ const LightSlider = (props: Props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  track: {
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: Colors.white,
-  },
-  thumb: {
-    width: 20,
-    height: 20,
-    borderRadius: 20 / 2,
-    backgroundColor: Colors.sliderThumbColor,
-    borderColor: Colors.white,
-    borderWidth: 2,
-  },
-});
 
 LightSlider.defaultProps = {
   minNumber: 0,

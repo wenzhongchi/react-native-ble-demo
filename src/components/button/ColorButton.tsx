@@ -16,6 +16,7 @@ interface Props {
   bottomBorder?: boolean;
   topBorder?: boolean;
   rightBorder?: boolean;
+  selected: boolean;
 }
 
 const ColorButton = (props: Props) => {
@@ -31,14 +32,22 @@ const ColorButton = (props: Props) => {
     rightBorder,
     bottomBorder,
     iconName,
+    selected,
   } = props;
 
   const [highlight, setHighlight] = useState(false);
 
-  const topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
-  const leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
-  const rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
-  const bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
+  let topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
+  let leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
+  let rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
+  let bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
+
+  if (selected) {
+    topBorderWidth = 2;
+    leftBorderWidth = 2;
+    rightBorderWidth = 2;
+    bottomBorderWidth = 2;
+  }
 
   return (
     <TouchableHighlight

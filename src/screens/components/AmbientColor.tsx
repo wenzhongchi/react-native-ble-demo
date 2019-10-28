@@ -7,9 +7,15 @@ interface Props {
   onPress: (color: string) => void;
   onCustom: () => void;
   containerStyle?: ViewStyle;
+  selectedColor: string;
 }
 
-const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
+const AmbientColor = ({
+  onPress,
+  onCustom,
+  containerStyle,
+  selectedColor,
+}: Props) => {
   return (
     <View
       style={[
@@ -20,6 +26,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
       ]}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
+          selected={selectedColor === '#ed2644'}
           color="#ed2644"
           topBorder
           rightBorder
@@ -29,6 +36,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#3bb44a'}
           color="#3bb44a"
           topBorder
           rightBorder
@@ -38,6 +46,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#0d72b9'}
           color="#0d72b9"
           topBorder
           rightBorder
@@ -47,6 +56,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#ffffff'}
           color="#ffffff"
           topBorder
           bottomBorder
@@ -57,6 +67,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
+          selected={selectedColor === '#f05b26'}
           color="#f05b26"
           rightBorder
           bottomBorder
@@ -65,6 +76,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#8bc540'}
           color="#8bc540"
           rightBorder
           bottomBorder
@@ -73,6 +85,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#662f8f'}
           color="#662f8f"
           rightBorder
           bottomBorder
@@ -81,6 +94,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#fbf7c8'}
           color="#fbf7c8"
           bottomBorder
           onPressColor={(color: string) => {
@@ -90,6 +104,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
+          selected={selectedColor === '#faaf3b'}
           color="#faaf3b"
           rightBorder
           bottomBorder
@@ -98,6 +113,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#29a9e1'}
           color="#29a9e1"
           rightBorder
           bottomBorder
@@ -106,6 +122,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#92298d'}
           color="#92298d"
           rightBorder
           bottomBorder
@@ -114,6 +131,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#f9f297'}
           color="#f9f297"
           bottomBorder
           onPressColor={(color: string) => {
@@ -123,6 +141,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
+          selected={selectedColor === '#f5ea14'}
           color="#f5ea14"
           rightBorder
           bottomBorder
@@ -131,6 +150,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#6fcbdc'}
           color="#6fcbdc"
           rightBorder
           bottomBorder
@@ -139,6 +159,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#ec2079'}
           color="#ec2079"
           rightBorder
           bottomBorder
@@ -147,6 +168,7 @@ const AmbientColor = ({ onPress, onCustom, containerStyle }: Props) => {
           }}
         />
         <ColorButton
+          selected={selectedColor === '#fff181'}
           color="#fff181"
           bottomBorder
           onPressColor={(color: string) => {

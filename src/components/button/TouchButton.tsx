@@ -55,7 +55,7 @@ const TouchButton = (props: Props) => {
           height: buttonHeight,
           justifyContent: 'center',
           borderWidth: 3,
-          borderColor: Colors.borderColor,
+          borderColor: disabled ? Colors.disabled : Colors.borderColor,
           borderRadius: 8,
         },
         containerStyle,
@@ -72,15 +72,15 @@ const TouchButton = (props: Props) => {
             justifyContent: 'center',
           }}>
           <ButtonIcon
-            size={37}
+            size={25}
             style={{ alignSelf: 'center' }}
             name={iconName}
-            color={iconColor}
+            color={disabled ? Colors.disabled : iconColor}
           />
         </View>
         <Text
           style={{
-            color: textColor,
+            color: disabled ? Colors.disabled : textColor,
             alignSelf: 'center',
             fontSize: fontSize,
             fontWeight: 'bold',

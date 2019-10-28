@@ -13,8 +13,8 @@ const CustomColor = ({ onChange, containerStyle }: Props) => {
       style={[
         {
           flex: 1,
-          marginVertical: 10,
-          marginHorizontal: 40,
+          marginVertical: 30,
+          marginHorizontal: 50,
         },
         containerStyle,
       ]}>

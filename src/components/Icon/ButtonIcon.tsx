@@ -6,9 +6,10 @@ import { ViewStyle, Image } from 'react-native';
 import BluetoothIcon from '../../assets/svg/ble.js';
 import StarIcon from '../../assets/svg/star.js';
 import ShootingStarIcon from '../../assets/svg/shooting_star.js';
-import ColorStarIcon from '../../assets/svg/color_star.js';
-import EffectsIcon from '../../assets/svg/effects.js';
-import EffectsColorIcon from '../../assets/svg/effects_color.js';
+import StarColorIcon from '../../assets/svg/star_color.js';
+import StarEffectsIcon from '../../assets/svg/star_effects.js';
+import AmbientColorIcon from '../../assets/svg/ambient_color.js';
+import AmbientEffectsIcon from '../../assets/svg/ambient_effects.js';
 
 import TwinkleIcon from '../../assets/svg/twinkle.js';
 import FireflyIcon from '../../assets/svg/firefly.js';
@@ -20,6 +21,8 @@ import JamboreeIcon from '../../assets/svg/jamboree.js';
 import FadeIcon from '../../assets/svg/fade.js';
 import BlinkIcon from '../../assets/svg/blink.js';
 import NoEffectIcon from '../../assets/svg/no_effect.js';
+
+import MenuIcon from '../../assets/svg/menu.js';
 
 // png
 import CloseIcon from '../../assets/png/close.png';
@@ -34,12 +37,14 @@ import { verticalTextScale } from '../../utils/textSize';
 const DEFAULT_SIZE = 30;
 
 export const COMPONENT_SVG_REGISTRY = {
+  MenuIcon,
   BluetoothIcon,
   StarIcon,
   ShootingStarIcon,
-  ColorStarIcon,
-  EffectsIcon,
-  EffectsColorIcon,
+  StarColorIcon,
+  StarEffectsIcon,
+  AmbientColorIcon,
+  AmbientEffectsIcon,
   TwinkleIcon,
   FireflyIcon,
   RandomIcon,
@@ -93,14 +98,15 @@ const ButtonIcon = ({
   };
 
   return ComponentIcon ? (
-    <ComponentIcon color={color} style={[iconStyle, style]} />
+    <ComponentIcon
+      color={color}
+      style={[iconStyle, style]}
+      height={actualHeight}
+      width={actualWidth}
+    />
   ) : (
     // @ts-ignore
-    <Image
-      resizeMode="contain"
-      source={ImageSource}
-      style={[iconStyle, style]}
-    />
+    <Image resizeMode="cover" source={ImageSource} style={[iconStyle, style]} />
   );
 };
 

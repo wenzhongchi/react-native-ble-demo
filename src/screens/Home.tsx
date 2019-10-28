@@ -12,6 +12,8 @@ import {
   Platform,
   Alert,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -45,6 +47,7 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 interface Props {}
 
 interface State {
+  showMenu: boolean;
   showStarEffect: boolean;
   showStarColor: boolean;
   showShootingStar: boolean;
@@ -72,6 +75,7 @@ class Home extends Component<Props, State> {
     super(props);
 
     this.state = {
+      showMenu: false,
       showStarEffect: false,
       showStarColor: false,
       showShootingStar: false,
@@ -222,10 +226,11 @@ class Home extends Component<Props, State> {
 
   // render
   renderStarTitle = () => {
-    const { showStarEffect, showStarColor } = this.state;
+    const { showStarEffect, showStarColor, showShootingStar } = this.state;
 
     if (showStarEffect) return 'Starry Night Effects';
     if (showStarColor) return 'Starry Night Colors';
+    if (showShootingStar) return 'Shooting Star';
     return 'Stars';
   };
 
@@ -246,6 +251,7 @@ class Home extends Component<Props, State> {
     if (showStarEffect)
       return (
         <StarEffect
+          selectedIcon={starIconName}
           onPressTwinkle={() => {
             this.setState({ starIconName: 'TwinkleIcon' });
             this.handleWrite('T');
@@ -276,6 +282,7 @@ class Home extends Component<Props, State> {
     if (showStarColor)
       return (
         <StarColor
+          selectedColor={starColorName}
           onPress={(color: string) => {
             console.log(color);
             if (color === 'Rainbow') {
@@ -317,8 +324,20 @@ class Home extends Component<Props, State> {
       return (
         <ShootingColor
           selectedMode={selectedShootingMode}
+          selectedColor={shootingColorName}
           onPress={(color: string) => {
             console.log(color);
+            if (color === 'red') {
+              this.setState({ shootingColorName: color });
+              const command =
+                'S,' +
+                selectedShootingMode +
+                ',300,300,300,' +
+                shootingStarValue;
+              console.log(command);
+              this.handleWrite(command);
+              return;
+            }
             this.setState({ shootingColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
@@ -339,12 +358,73 @@ class Home extends Component<Props, State> {
           onPressText={(text: string) => {
             console.log(text);
             this.setState({ selectedShootingMode: text });
+            if (shootingColorName === 'white') {
+              // didn't choose any color yet
+              return;
+            }
+
+            if (shootingColorName === 'red') {
+              // choose rainbow
+              const command =
+                'S,' +
+                selectedShootingMode +
+                ',300,300,300,' +
+                shootingStarValue;
+              console.log(command);
+              this.handleWrite(command);
+              return;
+            }
+            const rgbColor = hexRgb(shootingColorName);
+            console.log(rgbColor);
+            const command =
+              'S,' +
+              selectedShootingMode +
+              ',' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              shootingStarValue;
+            console.log(command);
+            this.handleWrite(command);
           }}
-          sliderValue={0}
+          sliderValue={shootingStarValue}
           onChange={(value: number) => {
             console.log(Math.round(value));
-            this.setState({ starDimValue: Math.round(value) });
-            this.handleWrite('D,' + Math.round(value));
+            this.setState({ shootingStarValue: Math.round(value) });
+            if (shootingColorName === 'white') {
+              // didn't choose any color yet
+              return;
+            }
+
+            if (shootingColorName === 'red') {
+              // choose rainbow
+              const command =
+                'S,' +
+                selectedShootingMode +
+                ',300,300,300,' +
+                shootingStarValue;
+              console.log(command);
+              this.handleWrite(command);
+              return;
+            }
+            const rgbColor = hexRgb(shootingColorName);
+            console.log(rgbColor);
+            const command =
+              'S,' +
+              selectedShootingMode +
+              ',' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              Math.round(value);
+            console.log(command);
+            this.handleWrite(command);
           }}
         />
       );
@@ -366,7 +446,7 @@ class Home extends Component<Props, State> {
             marginVertical: 0.015 * ScreenHeight,
             height: 0.06 * ScreenHeight,
           }}
-          iconName="ColorStarIcon"
+          iconName="StarColorIcon"
           iconColor={starColorName}
           textLabel="Starry Night Colors"
           onPress={() => this.setState({ showStarColor: true })}
@@ -404,10 +484,10 @@ class Home extends Component<Props, State> {
             disabled={starDisabled}
             textLabel="Dim"
             minNumber={starDimValue}
-            sliderValue={shootingStarValue}
+            sliderValue={0}
             onChange={(value: number) => {
               console.log(Math.round(value));
-              this.setState({ shootingStarValue: Math.round(value) });
+              this.setState({ starDimValue: Math.round(value) });
             }}
           />
         </View>
@@ -420,7 +500,7 @@ class Home extends Component<Props, State> {
 
     if (showAmbientEffect) return 'Ambient Light Effects';
     if (showAmbientColor) return 'Ambient Light Colors';
-    if (showCustomColor) return 'Ambient Custom';
+    if (showCustomColor) return 'Ambient Custom Color';
     return 'Ambient Light';
   };
 
@@ -439,6 +519,7 @@ class Home extends Component<Props, State> {
     if (showAmbientEffect)
       return (
         <AmbientEffect
+          selectedIcon={ambientIconName}
           onPressFade={() => {
             this.setState({ ambientIconName: 'FadeIcon' });
             this.handleWrite('e,' + ambientSpeedValue);
@@ -457,6 +538,7 @@ class Home extends Component<Props, State> {
     if (showAmbientColor)
       return (
         <AmbientColor
+          selectedColor={ambientColorName}
           onPress={(color: string) => {
             this.setState({ ambientColorName: color });
             console.log(color);
@@ -506,7 +588,7 @@ class Home extends Component<Props, State> {
             marginVertical: 0.015 * ScreenHeight,
             height: 0.055 * ScreenHeight,
           }}
-          iconName="EffectsColorIcon"
+          iconName="AmbientColorIcon"
           iconColor={ambientColorName}
           textLabel="Ambient Light Colors"
           onPress={() => this.setState({ showAmbientColor: true })}
@@ -556,6 +638,50 @@ class Home extends Component<Props, State> {
     );
   };
 
+  renderMenu = () => {
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          top: 45,
+          backgroundColor: 'white',
+          left: 0,
+          borderWidth: 1,
+          borderColor: Colors.menu,
+          width: 140,
+          height: 50,
+        }}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Linking.openSettings();
+          }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ButtonIcon
+              size={40}
+              color={this.connectedPeripheral ? Colors.menu : Colors.disabled}
+              name="BluetoothIcon"
+            />
+            <Text
+              style={{
+                alignSelf: 'center',
+                fontSize: 15,
+                fontWeight: 'bold',
+                color: this.connectedPeripheral ? Colors.menu : Colors.disabled,
+              }}>
+              {this.connectedPeripheral ? 'PAIRED' : 'CONNECT'}
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    );
+  };
+
   render() {
     const {
       showStarEffect,
@@ -564,6 +690,7 @@ class Home extends Component<Props, State> {
       showAmbientEffect,
       showAmbientColor,
       showCustomColor,
+      showMenu,
     } = this.state;
 
     return (
@@ -576,6 +703,19 @@ class Home extends Component<Props, State> {
               <ImageBackground
                 style={{ height: 45, width: '100%' }}
                 source={StarTopBgImage}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({ showMenu: !showMenu });
+                  }}
+                  style={{
+                    backgroundColor: Colors.menu,
+                    height: 45,
+                    width: 45,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ButtonIcon name="MenuIcon" />
+                </TouchableOpacity>
                 <Text
                   style={{
                     alignSelf: 'center',
@@ -611,6 +751,7 @@ class Home extends Component<Props, State> {
                 )}
               </ImageBackground>
               {this.renderStar()}
+              {showMenu && this.renderMenu()}
             </View>
           </View>
           <View style={styles.lightContainer}>

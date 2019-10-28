@@ -3,12 +3,14 @@ import { View } from 'react-native';
 import MenuButton from '../../components/button/MenuButton';
 
 interface Props {
+  selectedIcon: string;
   onPressFade: () => void;
   onPressBlink: () => void;
   onPressNoEffect: () => void;
 }
 
 const AmbientEffect = ({
+  selectedIcon,
   onPressFade,
   onPressBlink,
   onPressNoEffect,
@@ -16,27 +18,24 @@ const AmbientEffect = ({
   return (
     <View style={{ flexDirection: 'row', flex: 1 }}>
       <MenuButton
+        selected={selectedIcon === 'FadeIcon'}
         iconName="FadeIcon"
         textLabel="Fade"
         rightBorder
         onPress={onPressFade}
-        iconSize={130}
-        iconMarginTop={50}
       />
       <MenuButton
+        selected={selectedIcon === 'BlinkIcon'}
         iconName="BlinkIcon"
         textLabel="Blink"
         rightBorder
         onPress={onPressBlink}
-        iconSize={130}
-        iconMarginTop={50}
       />
       <MenuButton
+        selected={selectedIcon === 'NoEffectIcon'}
         iconName="NoEffectIcon"
         textLabel={`No\nEffect`}
         onPress={onPressNoEffect}
-        iconSize={130}
-        iconMarginTop={50}
       />
     </View>
   );

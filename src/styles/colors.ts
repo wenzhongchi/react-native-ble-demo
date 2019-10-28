@@ -14,6 +14,10 @@ enum Colors {
   switchColor = '#768b93',
 
   sliderThumbColor = '#768b93',
+
+  disabled = 'rgba(192, 192, 192, 01)',
+
+  menu = 'rgb(64, 87, 104)',
 }
 
 export default Colors;
