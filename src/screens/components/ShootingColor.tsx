@@ -43,8 +43,6 @@ const ShootingColor = ({
           selected={selectedMode === '1'}
           containerStyle={{ width: '100%' }}
           text="SS1"
-          rightBorder
-          bottomBorder
           onPressText={(text: string) => {
             if (onPressText) onPressText('1');
           }}
@@ -53,9 +51,6 @@ const ShootingColor = ({
           selected={selectedColor === '#ed2644'}
           containerStyle={{ width: '100%' }}
           color="#ed2644"
-          topBorder
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -64,9 +59,6 @@ const ShootingColor = ({
           selected={selectedColor === '#3bb44a'}
           containerStyle={{ width: '100%' }}
           color="#3bb44a"
-          topBorder
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -75,9 +67,6 @@ const ShootingColor = ({
           selected={selectedColor === '#0d72b9'}
           containerStyle={{ width: '100%' }}
           color="#0d72b9"
-          topBorder
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -86,8 +75,6 @@ const ShootingColor = ({
           selected={selectedColor === '#ffffff'}
           containerStyle={{ width: '100%' }}
           color="#ffffff"
-          topBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -98,8 +85,6 @@ const ShootingColor = ({
           selected={selectedMode === '2'}
           containerStyle={{ width: '100%' }}
           text="SS2"
-          rightBorder
-          bottomBorder
           onPressText={(text: string) => {
             if (onPressText) onPressText('2');
           }}
@@ -108,8 +93,6 @@ const ShootingColor = ({
           selected={selectedColor === '#f05b26'}
           containerStyle={{ width: '100%' }}
           color="#f05b26"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -118,8 +101,6 @@ const ShootingColor = ({
           selected={selectedColor === '#8bc540'}
           containerStyle={{ width: '100%' }}
           color="#8bc540"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -128,8 +109,6 @@ const ShootingColor = ({
           selected={selectedColor === '#662f8f'}
           containerStyle={{ width: '100%' }}
           color="#662f8f"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -138,7 +117,6 @@ const ShootingColor = ({
           selected={selectedColor === '#fbf7c8'}
           containerStyle={{ width: '100%' }}
           color="#fbf7c8"
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -149,8 +127,6 @@ const ShootingColor = ({
           selected={selectedMode === '3'}
           containerStyle={{ width: '100%' }}
           text="SS3"
-          rightBorder
-          bottomBorder
           onPressText={(text: string) => {
             if (onPressText) onPressText('3');
           }}
@@ -159,8 +135,6 @@ const ShootingColor = ({
           selected={selectedColor === '#faaf3b'}
           containerStyle={{ width: '100%' }}
           color="#faaf3b"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -169,8 +143,6 @@ const ShootingColor = ({
           selected={selectedColor === '#29a9e1'}
           containerStyle={{ width: '100%' }}
           color="#29a9e1"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -179,8 +151,6 @@ const ShootingColor = ({
           selected={selectedColor === '#92298d'}
           containerStyle={{ width: '100%' }}
           color="#92298d"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -189,7 +159,6 @@ const ShootingColor = ({
           selected={selectedColor === '#f9f297'}
           containerStyle={{ width: '100%' }}
           color="#f9f297"
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -200,8 +169,6 @@ const ShootingColor = ({
           selected={selectedColor === 'red'}
           containerStyle={{ width: '100%' }}
           iconName="RainbowLoadIcon"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             if (onPressText) onPress('red');
           }}
@@ -210,8 +177,6 @@ const ShootingColor = ({
           selected={selectedColor === '#f5ea14'}
           containerStyle={{ width: '100%' }}
           color="#f5ea14"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -220,8 +185,6 @@ const ShootingColor = ({
           selected={selectedColor === '#6fcbdc'}
           containerStyle={{ width: '100%' }}
           color="#6fcbdc"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -230,8 +193,6 @@ const ShootingColor = ({
           selected={selectedColor === '#ec2079'}
           containerStyle={{ width: '100%' }}
           color="#ec2079"
-          rightBorder
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -240,7 +201,6 @@ const ShootingColor = ({
           selected={selectedColor === '#fff181'}
           containerStyle={{ width: '100%' }}
           color="#fff181"
-          bottomBorder
           onPressColor={(color: string) => {
             onPress(color);
           }}

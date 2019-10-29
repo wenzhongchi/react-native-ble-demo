@@ -9,7 +9,6 @@ interface Props {
   onPress: () => void;
   iconName: string;
   iconSize?: number;
-  iconMarginTop?: number;
   containerStyle?: ViewStyle;
   buttonHeight?: number;
   buttonWidth?: number;
@@ -17,10 +16,6 @@ interface Props {
   iconColor?: string;
   fontSize?: number;
   disabled?: boolean;
-  leftBorder?: boolean;
-  bottomBorder?: boolean;
-  topBorder?: boolean;
-  rightBorder?: boolean;
   selected: boolean;
 }
 
@@ -30,34 +25,16 @@ const MenuButton = (props: Props) => {
     containerStyle,
     iconName,
     iconSize,
-    iconMarginTop,
     buttonHeight,
     buttonWidth,
     textLabel,
     fontSize,
     disabled,
-    topBorder,
-    leftBorder,
-    rightBorder,
-    bottomBorder,
     iconColor,
     selected,
   } = props;
 
   const [textColor, setTextColor] = useState(Colors.textColor1);
-  const [highlight, setHighlight] = useState(false);
-
-  let topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
-  let leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
-  let rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
-  let bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
-
-  if (selected) {
-    topBorderWidth = 2;
-    leftBorderWidth = 2;
-    rightBorderWidth = 2;
-    bottomBorderWidth = 2;
-  }
 
   return (
     <TouchableHighlight
@@ -66,21 +43,16 @@ const MenuButton = (props: Props) => {
       underlayColor={Colors.borderColor}
       onShowUnderlay={() => {
         setTextColor(Colors.textColor2);
-        setHighlight(true);
       }}
       onHideUnderlay={() => {
         setTextColor(Colors.textColor1);
-        setHighlight(false);
       }}
       style={[
         {
           height: buttonHeight,
           width: buttonWidth,
           flex: 1,
-          borderTopWidth: topBorderWidth,
-          borderLeftWidth: leftBorderWidth,
-          borderRightWidth: rightBorderWidth,
-          borderBottomWidth: bottomBorderWidth,
+          borderWidth: 1,
           borderColor: Colors.white,
         },
         containerStyle,
@@ -90,6 +62,8 @@ const MenuButton = (props: Props) => {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
+          borderWidth: selected ? 3 : 0,
+          borderColor: Colors.white,
         }}>
         <View
           style={{

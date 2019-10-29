@@ -31,23 +31,18 @@ const StarEffect = ({
           selected={selectedIcon === 'TwinkleIcon'}
           iconName="TwinkleIcon"
           textLabel="Twinkle"
-          rightBorder
-          bottomBorder
           onPress={onPressTwinkle}
         />
         <MenuButton
           selected={selectedIcon === 'FireflyIcon'}
           iconName="FireflyIcon"
           textLabel="Firefly"
-          rightBorder
-          bottomBorder
           onPress={onPressFirefly}
         />
         <MenuButton
           selected={selectedIcon === 'BreezeIcon'}
           iconName="BreezeIcon"
           textLabel="Breeze"
-          bottomBorder
           onPress={onPressBreeze}
         />
       </View>
@@ -56,14 +51,12 @@ const StarEffect = ({
           selected={selectedIcon === 'RandomIcon'}
           iconName="RandomIcon"
           textLabel="Random"
-          rightBorder
           onPress={onPressRandom}
         />
         <MenuButton
           selected={selectedIcon === 'RainDropsIcon'}
           iconName="RainDropsIcon"
           textLabel="Rain Drops"
-          rightBorder
           onPress={onPressRainDrops}
         />
         <MenuButton

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ViewStyle, TouchableHighlight, View, Text } from 'react-native';
 import DebouncedButton from './Debounce';
 import Colors from '../../styles/colors';
@@ -12,10 +12,6 @@ interface Props {
   buttonWidth?: number;
   disabled?: boolean;
   selected: boolean;
-  leftBorder?: boolean;
-  bottomBorder?: boolean;
-  topBorder?: boolean;
-  rightBorder?: boolean;
 }
 
 const TextButton = (props: Props) => {
@@ -27,46 +23,19 @@ const TextButton = (props: Props) => {
     buttonWidth,
     disabled,
     selected,
-    topBorder,
-    leftBorder,
-    rightBorder,
-    bottomBorder,
   } = props;
-
-  const [highlight, setHighlight] = useState(false);
-
-  let topBorderWidth = highlight ? 2 : topBorder ? 1 : 0;
-  let leftBorderWidth = highlight ? 2 : leftBorder ? 1 : 0;
-  let rightBorderWidth = highlight ? 2 : rightBorder ? 1 : 0;
-  let bottomBorderWidth = highlight ? 2 : bottomBorder ? 1 : 0;
-
-  if (selected) {
-    topBorderWidth = 2;
-    leftBorderWidth = 2;
-    rightBorderWidth = 2;
-    bottomBorderWidth = 2;
-  }
 
   return (
     <TouchableHighlight
       disabled={disabled}
       onPress={() => onPressText(text)}
       underlayColor={Colors.borderColor}
-      onShowUnderlay={() => {
-        setHighlight(true);
-      }}
-      onHideUnderlay={() => {
-        setHighlight(false);
-      }}
       style={[
         {
           height: buttonHeight,
           width: buttonWidth,
           flex: 1,
-          borderTopWidth: topBorderWidth,
-          borderLeftWidth: leftBorderWidth,
-          borderRightWidth: rightBorderWidth,
-          borderBottomWidth: bottomBorderWidth,
+          borderWidth: 1,
           borderColor: Colors.white,
           justifyContent: 'center',
           alignItems: 'center',
@@ -74,16 +43,26 @@ const TextButton = (props: Props) => {
         },
         containerStyle,
       ]}>
-      <Text
+      <View
         style={{
-          color: Colors.white,
-          alignSelf: 'center',
-          fontSize: verticalTextScale(26),
-          fontWeight: 'bold',
-          textAlign: 'center',
+          height: '100%',
+          width: '100%',
+          borderWidth: selected ? 3 : 0,
+          borderColor: Colors.white,
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
-        {text}
-      </Text>
+        <Text
+          style={{
+            color: Colors.white,
+            alignSelf: 'center',
+            fontSize: verticalTextScale(26),
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}>
+          {text}
+        </Text>
+      </View>
     </TouchableHighlight>
   );
 };

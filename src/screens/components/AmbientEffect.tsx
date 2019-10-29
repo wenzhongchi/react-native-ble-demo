@@ -21,14 +21,12 @@ const AmbientEffect = ({
         selected={selectedIcon === 'FadeIcon'}
         iconName="FadeIcon"
         textLabel="Fade"
-        rightBorder
         onPress={onPressFade}
       />
       <MenuButton
         selected={selectedIcon === 'BlinkIcon'}
         iconName="BlinkIcon"
         textLabel="Blink"
-        rightBorder
         onPress={onPressBlink}
       />
       <MenuButton

@@ -24,6 +24,7 @@ import { stringToBytes } from 'convert-string';
 import bytesCounter from 'bytes-counter';
 import hexRgb from 'hex-rgb';
 import { ReduxState, SettingState } from '../types/types';
+import AndroidOpenSettings from 'react-native-android-open-settings';
 import StarTopBgImage from '../assets/png/star_top_bg.png';
 import LightTopBgImage from '../assets/png/light_top_bg.png';
 import AppBgImage from '../assets/png/app_bg.png';
@@ -653,7 +654,11 @@ class Home extends Component<Props, State> {
         }}>
         <TouchableWithoutFeedback
           onPress={() => {
-            Linking.openSettings();
+            if (Platform.OS === 'android') {
+              AndroidOpenSettings.bluetoothSettings();
+            } else {
+              Linking.openSettings();
+            }
           }}>
           <View
             style={{
@@ -713,6 +718,9 @@ class Home extends Component<Props, State> {
                     width: 45,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
                   }}>
                   <ButtonIcon name="MenuIcon" />
                 </TouchableOpacity>
