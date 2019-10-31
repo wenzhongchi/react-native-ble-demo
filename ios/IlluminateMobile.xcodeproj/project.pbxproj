@@ -44,7 +44,7 @@
 		00E356EE1AD99517003FC87E /* IlluminateMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IlluminateMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* IlluminateMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IlluminateMobileTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* IlluminateMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IlluminateMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Illuminate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Illuminate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = IlluminateMobile/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = IlluminateMobile/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* IlluminateMobile.app */,
+				13B07F961A680F5B00A75B9A /* Illuminate.app */,
 				00E356EE1AD99517003FC87E /* IlluminateMobileTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* IlluminateMobile-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* IlluminateMobile-tvOSTests.xctest */,
@@ -236,7 +236,7 @@
 			);
 			name = IlluminateMobile;
 			productName = IlluminateMobile;
-			productReference = 13B07F961A680F5B00A75B9A /* IlluminateMobile.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Illuminate.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* IlluminateMobile-tvOS */ = {
@@ -609,7 +609,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IlluminateMobile.app/IlluminateMobile";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Illuminate.app/Illuminate";
 			};
 			name = Debug;
 		};
@@ -635,7 +635,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IlluminateMobile.app/IlluminateMobile";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Illuminate.app/Illuminate";
 			};
 			name = Release;
 		};
@@ -646,9 +646,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TA37Q2KTTE;
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -657,7 +658,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.FSyn.ergy;
-				PRODUCT_NAME = IlluminateMobile;
+				PRODUCT_NAME = Illuminate;
 				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-development";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -670,9 +671,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TA37Q2KTTE;
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = IlluminateMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -681,8 +683,8 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.FSyn.ergy;
-				PRODUCT_NAME = IlluminateMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-ad-hoc";
+				PRODUCT_NAME = Illuminate;
+				PROVISIONING_PROFILE_SPECIFIER = "Illuminate-distribution";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

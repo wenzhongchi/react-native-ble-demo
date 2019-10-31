@@ -10,10 +10,11 @@ import {
   NativeModules,
   PermissionsAndroid,
   Platform,
-  Alert,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Linking,
+  AppState,
+  AppStateStatus,
 } from 'react-native';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -67,10 +68,13 @@ interface State {
   starDisabled: boolean;
   ambientDisabled: boolean;
   selectedShootingMode: string;
+  appState: AppStateStatus;
 }
 class Home extends Component<Props, State> {
   handleDiscover: EmitterSubscription;
-  connectedPeripheral: Peripheral | null;
+  handlerDisconnect: EmitterSubscription;
+  handlerConnect: EmitterSubscription;
+  connectedPeripheralId: string | null;
 
   constructor(props: Props) {
     super(props);
@@ -95,45 +99,60 @@ class Home extends Component<Props, State> {
       starDisabled: false,
       ambientDisabled: false,
       selectedShootingMode: '1',
+      appState: AppState.currentState,
     };
 
-    this.connectedPeripheral = null;
+    this.connectedPeripheralId = null;
 
     this.handleDiscover = bleManagerEmitter.addListener(
       'BleManagerDiscoverPeripheral',
       this.handleDiscoverPeripheral,
     );
 
+    this.handlerDisconnect = bleManagerEmitter.addListener(
+      'BleManagerDisconnectPeripheral',
+      this.handleDisconnectedPeripheral,
+    );
+
+    this.handlerConnect = bleManagerEmitter.addListener(
+      'BleManagerConnectPeripheral',
+      this.handleConnectedPeripheral,
+    );
+
     bleManagerEmitter.addListener('BleManagerDidUpdateState', args => {
       const { state } = args;
       console.log(state);
       if (state === 'on') {
-        BleManager.scan([], 15, true).then(() => {
-          // Success code
-          console.log('Scan started');
+        console.log('State is on');
+        if (!this.connectedPeripheralId) {
+          this.startScan();
+        } else {
+          console.log('No need to connect');
+        }
+      } else {
+        BleManager.start({ showAlert: true }).then(() => {
+          console.log('BLuetooth initialized');
         });
       }
     });
   }
 
   componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
     // android only
-    BleManager.enableBluetooth()
-      .then(() => {
-        console.log('Bluetooth is already enabled');
-      })
-      .catch(error => {
-        console.log(error);
-        console.log('You need to enable bluetooth to use this app.');
-      });
+    if (Platform.OS === 'ios') {
+      BleManager.enableBluetooth()
+        .then(() => {
+          console.log('Bluetooth is already enabled');
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('You need to enable bluetooth to use this app.');
+        });
+    }
 
     BleManager.start({ showAlert: true }).then(() => {
       console.log('BLuetooth initialized');
-
-      // BleManager.scan([], 15, true).then(() => {
-      //   // Success code
-      //   console.log('Scan started');
-      // });
     });
 
     if (Platform.OS === 'android' && Platform.Version >= 23) {
@@ -142,49 +161,92 @@ class Home extends Component<Props, State> {
       ).then(result => {
         if (result) {
           console.log('Permission is OK');
+          BleManager.checkState();
         } else {
           PermissionsAndroid.requestPermission(
             PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
           ).then(result => {
             if (result) {
               console.log('User accept');
-              BleManager.scan([], 15, true).then(() => {
-                // Success code
-                console.log('Scan started');
-              });
+              BleManager.checkState();
             } else {
               console.log('User refuse');
             }
           });
         }
       });
+    } else {
+      BleManager.checkState();
     }
   }
 
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleDisconnectedPeripheral = (data: any) => {
+    if (this.connectedPeripheralId === data.peripheral) {
+      console.log('BLE disconnected' + data.peripheral);
+      this.connectedPeripheralId = null;
+    }
+  };
+
+  handleConnectedPeripheral = (data: any) => {
+    console.log('BLE connected ' + data.peripheral);
+    this.connectedPeripheralId = data.peripheral;
+  };
+
+  handleAppStateChange = async (nextAppState: AppStateStatus) => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('App has come to the foreground!');
+      if (this.connectedPeripheralId) {
+        BleManager.getConnectedPeripherals([]).then(results => {
+          for (const peripheral of results) {
+            if (peripheral.name && peripheral.name.includes('HMSoft')) {
+              console.log('Still connected');
+              return;
+            }
+          }
+          console.log('No connected peripherals');
+          this.connectedPeripheralId = null;
+        });
+      } else {
+        console.log('Scanning again');
+        this.startScan();
+      }
+    }
+    this.setState({ appState: nextAppState });
+  };
+
   // bluetooth
+  startScan = () => {
+    console.log('Scanning ...');
+    BleManager.scan([], 15, true).then(() => {
+      // Success code
+      console.log('Scan started');
+    });
+  };
+
+  connectBle = (peripheralId: string) => {
+    BleManager.connect(peripheralId)
+      .then(() => {
+        console.log('BLE resume connection');
+      })
+      .catch(error => {
+        console.log('Connection error', error);
+      });
+  };
 
   handleDiscoverPeripheral = async (peripheral: Peripheral) => {
     try {
-      if (peripheral.name && peripheral.name.includes('starkit')) {
+      if (peripheral.name && peripheral.name.includes('HMSoft')) {
         await BleManager.stopScan();
         console.log(peripheral);
         // connect
-        await BleManager.connect(peripheral.id);
-
-        BleManager.retrieveServices(peripheral.id).then(peripheralInfo => {
-          // Success code
-          console.log('Peripheral info:', peripheralInfo);
-        });
-
-        BleManager.getConnectedPeripherals([]).then(results => {
-          if (results.length == 0) {
-            console.log('No connected peripherals');
-            this.connectedPeripheral = null;
-          }
-          console.log('Connected peripherals');
-          this.connectedPeripheral = peripheral;
-          Alert.alert('Connected');
-        });
+        this.connectBle(peripheral.id);
       } else {
         console.log(peripheral.name);
       }
@@ -194,35 +256,42 @@ class Home extends Component<Props, State> {
   };
 
   handleWrite = (command: string) => {
-    if (!this.connectedPeripheral) return;
+    if (!this.connectedPeripheralId) return;
 
-    const peripheralId = this.connectedPeripheral.id;
+    console.log(this.connectedPeripheralId);
 
-    BleManager.retrieveServices(peripheralId).then(peripheralInfo => {
-      // Success code
-      console.log('Peripheral info:', peripheralInfo);
+    BleManager.retrieveServices(this.connectedPeripheralId)
+      .then(peripheralInfo => {
+        // Success code
+        console.log('Peripheral info:', peripheralInfo);
 
-      const service = 'FFE0';
-      const characteristic = 'FFE1';
+        const service = 'FFE0';
+        const characteristic = 'FFE1';
 
-      const data = stringToBytes(command);
-      const bytes = bytesCounter.count(command);
+        const data = stringToBytes(command);
+        const bytes = bytesCounter.count(command);
 
-      BleManager.writeWithoutResponse(
-        peripheralId,
-        service,
-        characteristic,
-        data,
-        bytes,
-      )
-        .then(() => {
-          console.log('Sent ' + command);
-        })
-        .catch(error => {
-          // Failure code
-          console.log(error);
-        });
-    });
+        if (!this.connectedPeripheralId) return;
+
+        BleManager.writeWithoutResponse(
+          this.connectedPeripheralId,
+          service,
+          characteristic,
+          data,
+          bytes,
+        )
+          .then(() => {
+            console.log('Sent ' + command);
+          })
+          .catch(error => {
+            // Failure code
+            console.log(error);
+          });
+      })
+      .catch(error => {
+        // Failure code
+        console.log(error);
+      });
   };
 
   // render
@@ -313,8 +382,22 @@ class Home extends Component<Props, State> {
             this.setState({ starColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
-            const command =
-              'c,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+
+            let wValue = 0;
+            let command =
+              'c,' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              wValue;
+            wValue;
+            if (color === '#ffffff') {
+              wValue = 255;
+              command = 'c,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+            }
             console.log(command);
             this.handleWrite(command);
           }}
@@ -342,7 +425,9 @@ class Home extends Component<Props, State> {
             this.setState({ shootingColorName: color });
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
-            const command =
+
+            let wValue = 0;
+            let command =
               'S,' +
               selectedShootingMode +
               ',' +
@@ -352,7 +437,26 @@ class Home extends Component<Props, State> {
               ',' +
               rgbColor.blue +
               ',' +
+              wValue +
+              ',';
+            shootingStarValue;
+            if (color === '#ffffff') {
+              wValue = 255;
+              command =
+                'S,' +
+                selectedShootingMode +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                wValue +
+                ',';
               shootingStarValue;
+            }
+
             console.log(command);
             this.handleWrite(command);
           }}
@@ -369,7 +473,7 @@ class Home extends Component<Props, State> {
               const command =
                 'S,' +
                 selectedShootingMode +
-                ',300,300,300,' +
+                ',300,300,300,0,' +
                 shootingStarValue;
               console.log(command);
               this.handleWrite(command);
@@ -377,7 +481,9 @@ class Home extends Component<Props, State> {
             }
             const rgbColor = hexRgb(shootingColorName);
             console.log(rgbColor);
-            const command =
+
+            let wValue = 0;
+            let command =
               'S,' +
               selectedShootingMode +
               ',' +
@@ -387,7 +493,26 @@ class Home extends Component<Props, State> {
               ',' +
               rgbColor.blue +
               ',' +
+              wValue +
+              ',';
+            shootingStarValue;
+            if (shootingColorName === '#ffffff') {
+              wValue = 255;
+              command =
+                'S,' +
+                selectedShootingMode +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                wValue +
+                ',';
               shootingStarValue;
+            }
+
             console.log(command);
             this.handleWrite(command);
           }}
@@ -413,7 +538,9 @@ class Home extends Component<Props, State> {
             }
             const rgbColor = hexRgb(shootingColorName);
             console.log(rgbColor);
-            const command =
+
+            let wValue = 0;
+            let command =
               'S,' +
               selectedShootingMode +
               ',' +
@@ -423,7 +550,26 @@ class Home extends Component<Props, State> {
               ',' +
               rgbColor.blue +
               ',' +
-              Math.round(value);
+              wValue +
+              ',';
+            shootingStarValue;
+            if (shootingColorName === '#ffffff') {
+              wValue = 255;
+              command =
+                'S,' +
+                selectedShootingMode +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                0 +
+                ',' +
+                wValue +
+                ',';
+              shootingStarValue;
+            }
+
             console.log(command);
             this.handleWrite(command);
           }}
@@ -489,6 +635,7 @@ class Home extends Component<Props, State> {
             onChange={(value: number) => {
               console.log(Math.round(value));
               this.setState({ starDimValue: Math.round(value) });
+              this.handleWrite('D,' + Math.round(value));
             }}
           />
         </View>
@@ -545,8 +692,22 @@ class Home extends Component<Props, State> {
             console.log(color);
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
-            const command =
-              'A,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+
+            let wValue = 0;
+            let command =
+              'A,' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              wValue;
+            if (color === '#ffffff') {
+              wValue = 255;
+              command = 'A,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+            }
+
             console.log(command);
             this.handleWrite(command);
           }}
@@ -564,8 +725,22 @@ class Home extends Component<Props, State> {
             console.log(color);
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
-            const command =
-              'A,' + rgbColor.red + ',' + rgbColor.green + ',' + rgbColor.blue;
+
+            let wValue = 0;
+            let command =
+              'A,' +
+              rgbColor.red +
+              ',' +
+              rgbColor.green +
+              ',' +
+              rgbColor.blue +
+              ',' +
+              wValue;
+            if (color === '#ffffff') {
+              wValue = 255;
+              command = 'A,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+            }
+
             console.log(command);
             this.handleWrite(command);
           }}
@@ -654,10 +829,8 @@ class Home extends Component<Props, State> {
         }}>
         <TouchableWithoutFeedback
           onPress={() => {
-            if (Platform.OS === 'android') {
-              AndroidOpenSettings.bluetoothSettings();
-            } else {
-              Linking.openSettings();
+            if (!this.connectedPeripheralId) {
+              this.startScan();
             }
           }}>
           <View
@@ -669,7 +842,7 @@ class Home extends Component<Props, State> {
             }}>
             <ButtonIcon
               size={40}
-              color={this.connectedPeripheral ? Colors.menu : Colors.disabled}
+              color={this.connectedPeripheralId ? Colors.menu : Colors.disabled}
               name="BluetoothIcon"
             />
             <Text
@@ -677,9 +850,11 @@ class Home extends Component<Props, State> {
                 alignSelf: 'center',
                 fontSize: 15,
                 fontWeight: 'bold',
-                color: this.connectedPeripheral ? Colors.menu : Colors.disabled,
+                color: this.connectedPeripheralId
+                  ? Colors.menu
+                  : Colors.disabled,
               }}>
-              {this.connectedPeripheral ? 'PAIRED' : 'CONNECT'}
+              {this.connectedPeripheralId ? 'PAIRED' : 'CONNECT'}
             </Text>
           </View>
         </TouchableWithoutFeedback>
