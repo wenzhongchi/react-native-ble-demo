@@ -57,8 +57,8 @@ const LightSlider = (props: Props) => {
         <Slider
           disabled={disabled}
           value={sliderValue}
-          minimumValue={0}
-          maximumValue={100}
+          minimumValue={minNumber}
+          maximumValue={maxNumber}
           onValueChange={onChange}
           step={1}
           trackStyle={{

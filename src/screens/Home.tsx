@@ -12,7 +12,6 @@ import {
   Platform,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Linking,
   AppState,
   AppStateStatus,
 } from 'react-native';
@@ -25,7 +24,6 @@ import { stringToBytes } from 'convert-string';
 import bytesCounter from 'bytes-counter';
 import hexRgb from 'hex-rgb';
 import { ReduxState, SettingState } from '../types/types';
-import AndroidOpenSettings from 'react-native-android-open-settings';
 import StarTopBgImage from '../assets/png/star_top_bg.png';
 import LightTopBgImage from '../assets/png/light_top_bg.png';
 import AppBgImage from '../assets/png/app_bg.png';
@@ -87,9 +85,9 @@ class Home extends Component<Props, State> {
       showAmbientEffect: false,
       showAmbientColor: false,
       showCustomColor: false,
-      ambientSpeedValue: 0,
-      ambientDimValue: 0,
-      starDimValue: 0,
+      ambientSpeedValue: 150,
+      ambientDimValue: 100,
+      starDimValue: 100,
       shootingStarValue: 0,
       starIconName: 'StarIcon',
       ambientIconName: 'FadeIcon',
@@ -130,9 +128,9 @@ class Home extends Component<Props, State> {
           console.log('No need to connect');
         }
       } else {
-        BleManager.start({ showAlert: true }).then(() => {
-          console.log('BLuetooth initialized');
-        });
+        // BleManager.start({ showAlert: true }).then(() => {
+        //   console.log('BLuetooth initialized');
+        // });
       }
     });
   }
@@ -186,7 +184,7 @@ class Home extends Component<Props, State> {
 
   handleDisconnectedPeripheral = (data: any) => {
     if (this.connectedPeripheralId === data.peripheral) {
-      console.log('BLE disconnected' + data.peripheral);
+      console.log('BLE disconnected ' + data.peripheral);
       this.connectedPeripheralId = null;
     }
   };
@@ -205,7 +203,7 @@ class Home extends Component<Props, State> {
       if (this.connectedPeripheralId) {
         BleManager.getConnectedPeripherals([]).then(results => {
           for (const peripheral of results) {
-            if (peripheral.name && peripheral.name.includes('HMSoft')) {
+            if (peripheral.name && peripheral.name.includes('starkit')) {
               console.log('Still connected');
               return;
             }
@@ -218,6 +216,19 @@ class Home extends Component<Props, State> {
         this.startScan();
       }
     }
+
+    console.log(nextAppState);
+
+    if (nextAppState.match(/inactive|background/)) {
+      console.log('connected id: ' + this.connectedPeripheralId);
+      if (this.connectedPeripheralId) {
+        BleManager.disconnect(this.connectedPeripheralId).then(() => {
+          this.connectedPeripheralId = null;
+          console.log('Disconnected');
+        });
+      }
+    }
+
     this.setState({ appState: nextAppState });
   };
 
@@ -242,7 +253,7 @@ class Home extends Component<Props, State> {
 
   handleDiscoverPeripheral = async (peripheral: Peripheral) => {
     try {
-      if (peripheral.name && peripheral.name.includes('HMSoft')) {
+      if (peripheral.name && peripheral.name.includes('starkit')) {
         await BleManager.stopScan();
         console.log(peripheral);
         // connect
@@ -383,7 +394,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'c,' +
               rgbColor.red +
@@ -391,12 +401,10 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue;
-            wValue;
+              ',0*';
+
             if (color === '#ffffff') {
-              wValue = 255;
-              command = 'c,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+              command = 'c,' + 0 + ',' + 0 + ',' + 0 + ',255*';
             }
             console.log(command);
             this.handleWrite(command);
@@ -416,8 +424,9 @@ class Home extends Component<Props, State> {
               const command =
                 'S,' +
                 selectedShootingMode +
-                ',300,300,300,' +
-                shootingStarValue;
+                ',300,300,300,0' +
+                shootingStarValue +
+                '*';
               console.log(command);
               this.handleWrite(command);
               return;
@@ -426,7 +435,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'S,' +
               selectedShootingMode +
@@ -436,25 +444,16 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue +
-              ',';
-            shootingStarValue;
+              ',0,' +
+              shootingStarValue +
+              '*';
             if (color === '#ffffff') {
-              wValue = 255;
               command =
                 'S,' +
                 selectedShootingMode +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                wValue +
-                ',';
-              shootingStarValue;
+                ',0,0,0,255,' +
+                shootingStarValue +
+                '*';
             }
 
             console.log(command);
@@ -474,7 +473,8 @@ class Home extends Component<Props, State> {
                 'S,' +
                 selectedShootingMode +
                 ',300,300,300,0,' +
-                shootingStarValue;
+                shootingStarValue +
+                '*';
               console.log(command);
               this.handleWrite(command);
               return;
@@ -482,7 +482,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(shootingColorName);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'S,' +
               selectedShootingMode +
@@ -492,25 +491,16 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue +
-              ',';
-            shootingStarValue;
+              ',0,' +
+              shootingStarValue +
+              '*';
             if (shootingColorName === '#ffffff') {
-              wValue = 255;
               command =
                 'S,' +
                 selectedShootingMode +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                wValue +
-                ',';
-              shootingStarValue;
+                ',0,0,0,255,' +
+                shootingStarValue +
+                '*';
             }
 
             console.log(command);
@@ -530,8 +520,9 @@ class Home extends Component<Props, State> {
               const command =
                 'S,' +
                 selectedShootingMode +
-                ',300,300,300,' +
-                shootingStarValue;
+                ',300,300,300,0' +
+                shootingStarValue +
+                '*';
               console.log(command);
               this.handleWrite(command);
               return;
@@ -539,7 +530,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(shootingColorName);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'S,' +
               selectedShootingMode +
@@ -549,25 +539,16 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue +
-              ',';
-            shootingStarValue;
+              ',0,' +
+              shootingStarValue +
+              '*';
             if (shootingColorName === '#ffffff') {
-              wValue = 255;
               command =
                 'S,' +
                 selectedShootingMode +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                0 +
-                ',' +
-                wValue +
-                ',';
-              shootingStarValue;
+                ',0,0,0,255,' +
+                shootingStarValue +
+                '*';
             }
 
             console.log(command);
@@ -630,8 +611,9 @@ class Home extends Component<Props, State> {
           <LightSlider
             disabled={starDisabled}
             textLabel="Dim"
-            minNumber={starDimValue}
-            sliderValue={0}
+            minNumber={10}
+            sliderValue={starDimValue}
+            maxNumber={100}
             onChange={(value: number) => {
               console.log(Math.round(value));
               this.setState({ starDimValue: Math.round(value) });
@@ -693,7 +675,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'A,' +
               rgbColor.red +
@@ -701,11 +682,9 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue;
+              ',0*';
             if (color === '#ffffff') {
-              wValue = 255;
-              command = 'A,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+              command = 'A,0,0,0,255*';
             }
 
             console.log(command);
@@ -726,7 +705,6 @@ class Home extends Component<Props, State> {
             const rgbColor = hexRgb(color);
             console.log(rgbColor);
 
-            let wValue = 0;
             let command =
               'A,' +
               rgbColor.red +
@@ -734,11 +712,9 @@ class Home extends Component<Props, State> {
               rgbColor.green +
               ',' +
               rgbColor.blue +
-              ',' +
-              wValue;
+              ',0*';
             if (color === '#ffffff') {
-              wValue = 255;
-              command = 'A,' + 0 + ',' + 0 + ',' + 0 + ',' + wValue;
+              command = 'A,0,0,0,255*';
             }
 
             console.log(command);
@@ -777,32 +753,38 @@ class Home extends Component<Props, State> {
               if (switchState) {
                 // on state
                 this.setState({ ambientDisabled: false });
-                this.handleWrite('A,0,0,255');
+                this.handleWrite('A,0,0,255,0*');
               } else {
                 // off state
                 this.setState({ ambientDisabled: true });
-                this.handleWrite('n');
+                this.handleWrite('A,0,0,0,0*');
               }
             }}
           />
         </View>
         <View style={{ marginTop: 2 }}>
           <LightSlider
-            disabled={ambientDisabled}
+            disabled={ambientDisabled || ambientIconName === 'NoEffectIcon'}
             textLabel="Speed"
-            minNumber={ambientSpeedValue}
-            sliderValue={0}
+            minNumber={150}
+            sliderValue={ambientSpeedValue}
+            maxNumber={255}
             onChange={(value: number) => {
               console.log(Math.round(value));
               this.setState({ ambientSpeedValue: Math.round(value) });
-              this.handleWrite('s,' + Math.round(value));
+              if (ambientIconName === 'FadeIcon') {
+                this.handleWrite('e,' + Math.round(value));
+              } else if (ambientIconName === 'BlinkIcon') {
+                this.handleWrite('k,' + Math.round(value));
+              }
             }}
           />
           <LightSlider
             disabled={ambientDisabled}
             textLabel="Dim"
-            minNumber={ambientDimValue}
-            sliderValue={0}
+            minNumber={10}
+            maxNumber={100}
+            sliderValue={ambientDimValue}
             onChange={(value: number) => {
               console.log(Math.round(value * 100));
               this.setState({ ambientDimValue: Math.round(value) });
