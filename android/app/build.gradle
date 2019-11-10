@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.illuminatemobile"
+        applicationId "com.fsn.ergy"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

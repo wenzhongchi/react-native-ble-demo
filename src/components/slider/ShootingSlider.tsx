@@ -16,14 +16,7 @@ interface Props {
 }
 
 const ShootingSlider = (props: Props) => {
-  const {
-    fontSize,
-    onChange,
-    minNumber,
-    maxNumber,
-    sliderValue,
-    disabled,
-  } = props;
+  const { onChange, minNumber, maxNumber, sliderValue, disabled } = props;
 
   return (
     <View
@@ -97,8 +90,9 @@ const ShootingSlider = (props: Props) => {
           value={sliderValue}
           minimumValue={minNumber}
           maximumValue={maxNumber}
-          onValueChange={onChange}
+          onSlidingComplete={onChange}
           step={1}
+          minimumTrackTintColor={disabled ? Colors.disabled : Colors.white}
           trackStyle={{
             height: 4,
             borderRadius: 2,

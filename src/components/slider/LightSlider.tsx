@@ -7,6 +7,8 @@ interface Props {
   containerStyle?: ViewStyle;
   textLabel: string;
   sliderValue: number;
+  leftText?: string;
+  rightText?: string;
   minNumber?: number;
   maxNumber?: number;
   buttonHeight?: number;
@@ -20,6 +22,8 @@ const LightSlider = (props: Props) => {
     textLabel,
     fontSize,
     onChange,
+    leftText,
+    rightText,
     minNumber,
     maxNumber,
     sliderValue,
@@ -46,7 +50,7 @@ const LightSlider = (props: Props) => {
           fontSize: fontSize,
           fontWeight: 'bold',
         }}>
-        {minNumber}
+        {leftText || minNumber}
       </Text>
       <View
         style={{
@@ -59,8 +63,9 @@ const LightSlider = (props: Props) => {
           value={sliderValue}
           minimumValue={minNumber}
           maximumValue={maxNumber}
-          onValueChange={onChange}
+          onSlidingComplete={onChange}
           step={1}
+          minimumTrackTintColor={disabled ? Colors.disabled : Colors.white}
           trackStyle={{
             height: 4,
             borderRadius: 2,
@@ -85,7 +90,7 @@ const LightSlider = (props: Props) => {
           fontSize: fontSize,
           fontWeight: 'bold',
         }}>
-        {maxNumber}
+        {rightText || maxNumber}
       </Text>
     </View>
   );

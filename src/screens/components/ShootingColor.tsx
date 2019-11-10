@@ -24,6 +24,23 @@ const ShootingColor = ({
   sliderValue,
   selectedColor,
 }: Props) => {
+  let defaultValue = sliderValue;
+  if (sliderValue === 0) {
+    defaultValue = 1;
+  }
+  if (sliderValue === 1) {
+    defaultValue = 2;
+  }
+  if (sliderValue === 2) {
+    defaultValue = 3;
+  }
+  if (sliderValue === 5) {
+    defaultValue = 4;
+  }
+  if (sliderValue === 10) {
+    defaultValue = 5;
+  }
+
   return (
     <View
       style={[
@@ -48,25 +65,25 @@ const ShootingColor = ({
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ed2644'}
+          selected={selectedColor === '#ff0000'}
           containerStyle={{ width: '100%' }}
-          color="#ed2644"
+          color="#ff0000"
           onPressColor={(color: string) => {
             onPress(color);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#3bb44a'}
+          selected={selectedColor === '#00ff00'}
           containerStyle={{ width: '100%' }}
-          color="#3bb44a"
+          color="#00ff00"
           onPressColor={(color: string) => {
             onPress(color);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#0d72b9'}
+          selected={selectedColor === '#0000ff'}
           containerStyle={{ width: '100%' }}
-          color="#0d72b9"
+          color="#0000ff"
           onPressColor={(color: string) => {
             onPress(color);
           }}
@@ -215,8 +232,33 @@ const ShootingColor = ({
         }}>
         <ShootingSlider
           disabled={false}
-          sliderValue={sliderValue}
-          onChange={onChange}
+          minNumber={1}
+          maxNumber={5}
+          sliderValue={defaultValue}
+          onChange={(value: number) => {
+            //translate slider value
+            if (value === 1) {
+              onChange(0);
+              return;
+            }
+            if (value === 2) {
+              onChange(1);
+              return;
+            }
+            if (value === 3) {
+              onChange(2);
+              return;
+            }
+            if (value === 4) {
+              onChange(5);
+              return;
+            }
+            if (value === 5) {
+              onChange(10);
+              return;
+            }
+            onChange(value);
+          }}
         />
       </View>
     </View>

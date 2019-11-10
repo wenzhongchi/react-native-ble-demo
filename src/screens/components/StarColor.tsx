@@ -19,22 +19,22 @@ const StarColor = ({ onPress, containerStyle, selectedColor }: Props) => {
       ]}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          selected={selectedColor === '#ed2644'}
-          color="#ed2644"
+          selected={selectedColor === '#ff0000'}
+          color="#ff0000"
           onPressColor={(color: string) => {
             onPress(color);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#3bb44a'}
-          color="#3bb44a"
+          selected={selectedColor === '#00ff00'}
+          color="#00ff00"
           onPressColor={(color: string) => {
             onPress(color);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#0d72b9'}
-          color="#0d72b9"
+          selected={selectedColor === '#0000ff'}
+          color="#0000ff"
           onPressColor={(color: string) => {
             onPress(color);
           }}
