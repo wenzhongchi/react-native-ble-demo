@@ -65,35 +65,35 @@ const ShootingColor = ({
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ff0000'}
+          selected={selectedColor === Colors.redColor}
           containerStyle={{ width: '100%' }}
           color="#ff0000"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.redColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#00ff00'}
+          selected={selectedColor === Colors.greenColor}
           containerStyle={{ width: '100%' }}
           color="#00ff00"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.greenColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#0000ff'}
+          selected={selectedColor === Colors.blueColor}
           containerStyle={{ width: '100%' }}
           color="#0000ff"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.blueColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ffffff'}
+          selected={selectedColor === Colors.whiteColor}
           containerStyle={{ width: '100%' }}
           color="#ffffff"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.whiteColor);
           }}
         />
       </View>
@@ -107,35 +107,35 @@ const ShootingColor = ({
           }}
         />
         <ColorButton
-          selected={selectedColor === '#f05b26'}
+          selected={selectedColor === Colors.orangeColor}
           containerStyle={{ width: '100%' }}
           color="#f05b26"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.orangeColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#8bc540'}
+          selected={selectedColor === Colors.lightGreenColor}
           containerStyle={{ width: '100%' }}
           color="#8bc540"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.lightGreenColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#662f8f'}
+          selected={selectedColor === Colors.lilacColor}
           containerStyle={{ width: '100%' }}
           color="#662f8f"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.lilacColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#fbf7c8'}
+          selected={selectedColor === Colors.coolWhiteColor}
           containerStyle={{ width: '100%' }}
           color="#fbf7c8"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.coolWhiteColor);
           }}
         />
       </View>
@@ -149,35 +149,35 @@ const ShootingColor = ({
           }}
         />
         <ColorButton
-          selected={selectedColor === '#faaf3b'}
+          selected={selectedColor === Colors.amberColor}
           containerStyle={{ width: '100%' }}
           color="#faaf3b"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.amberColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#29a9e1'}
+          selected={selectedColor === Colors.limeColor}
           containerStyle={{ width: '100%' }}
           color="#29a9e1"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.limeColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#92298d'}
+          selected={selectedColor === Colors.purpleColor}
           containerStyle={{ width: '100%' }}
           color="#92298d"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.purpleColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#f9f297'}
+          selected={selectedColor === Colors.naturalWhiteColor}
           containerStyle={{ width: '100%' }}
           color="#f9f297"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.naturalWhiteColor);
           }}
         />
       </View>
@@ -191,35 +191,35 @@ const ShootingColor = ({
           }}
         />
         <ColorButton
-          selected={selectedColor === '#f5ea14'}
+          selected={selectedColor === Colors.yellowColor}
           containerStyle={{ width: '100%' }}
           color="#f5ea14"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.yellowColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#6fcbdc'}
+          selected={selectedColor === Colors.aquaColor}
           containerStyle={{ width: '100%' }}
           color="#6fcbdc"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.aquaColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ec2079'}
+          selected={selectedColor === Colors.pinkColor}
           containerStyle={{ width: '100%' }}
           color="#ec2079"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.pinkColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#fff181'}
+          selected={selectedColor === Colors.warmWhiteColor}
           containerStyle={{ width: '100%' }}
           color="#fff181"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.warmWhiteColor);
           }}
         />
       </View>

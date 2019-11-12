@@ -406,7 +406,7 @@ class Home extends Component<Props, State> {
               rgbColor.blue +
               ',0*';
 
-            if (color === '#ffffff') {
+            if (color === Colors.whiteColor) {
               command = 'c,' + 0 + ',' + 0 + ',' + 0 + ',255*';
             }
             console.log(command);
@@ -448,7 +448,7 @@ class Home extends Component<Props, State> {
               ',0,' +
               shootingStarValue +
               '*';
-            if (color === '#ffffff') {
+            if (color === Colors.whiteColor) {
               command =
                 selectedShootingMode + ',0,0,0,255,' + shootingStarValue + '*';
             }
@@ -486,7 +486,7 @@ class Home extends Component<Props, State> {
               ',0,' +
               shootingStarValue +
               '*';
-            if (shootingColorName === '#ffffff') {
+            if (shootingColorName === Colors.whiteColor) {
               command = shootingMode + ',0,0,0,255,' + shootingStarValue + '*';
             }
 
@@ -529,7 +529,7 @@ class Home extends Component<Props, State> {
               ',0,' +
               shootingSliderValue +
               '*';
-            if (shootingColorName === '#ffffff') {
+            if (shootingColorName === Colors.whiteColor) {
               command =
                 selectedShootingMode +
                 ',0,0,0,255,' +
@@ -669,7 +669,7 @@ class Home extends Component<Props, State> {
               ',' +
               rgbColor.blue +
               ',0*';
-            if (color === '#ffffff') {
+            if (color === Colors.whiteColor) {
               command = 'A,0,0,0,255*';
             }
 
@@ -699,7 +699,7 @@ class Home extends Component<Props, State> {
               ',' +
               rgbColor.blue +
               ',0*';
-            if (color === '#ffffff') {
+            if (color === Colors.whiteColor) {
               command = 'A,0,0,0,255*';
             }
 
@@ -980,7 +980,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

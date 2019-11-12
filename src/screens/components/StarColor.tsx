@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ViewStyle } from 'react-native';
 import ColorButton from '../../components/button/ColorButton';
+import Colors from '../../styles/colors';
 
 interface Props {
   onPress: (color: string) => void;
@@ -19,121 +20,121 @@ const StarColor = ({ onPress, containerStyle, selectedColor }: Props) => {
       ]}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          selected={selectedColor === '#ff0000'}
+          selected={selectedColor === Colors.redColor}
           color="#ff0000"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.redColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#00ff00'}
+          selected={selectedColor === Colors.greenColor}
           color="#00ff00"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.greenColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#0000ff'}
+          selected={selectedColor === Colors.blueColor}
           color="#0000ff"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.blueColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ffffff'}
+          selected={selectedColor === Colors.whiteColor}
           color="#ffffff"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.whiteColor);
           }}
         />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          selected={selectedColor === '#f05b26'}
+          selected={selectedColor === Colors.orangeColor}
           color="#f05b26"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.orangeColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#8bc540'}
+          selected={selectedColor === Colors.lightGreenColor}
           color="#8bc540"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.lightGreenColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#662f8f'}
+          selected={selectedColor === Colors.lilacColor}
           color="#662f8f"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.lilacColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#fbf7c8'}
+          selected={selectedColor === Colors.coolWhiteColor}
           color="#fbf7c8"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.coolWhiteColor);
           }}
         />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          selected={selectedColor === '#faaf3b'}
+          selected={selectedColor === Colors.amberColor}
           color="#faaf3b"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.amberColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#29a9e1'}
+          selected={selectedColor === Colors.limeColor}
           color="#29a9e1"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.limeColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#92298d'}
+          selected={selectedColor === Colors.purpleColor}
           color="#92298d"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.purpleColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#f9f297'}
+          selected={selectedColor === Colors.naturalWhiteColor}
           color="#f9f297"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.naturalWhiteColor);
           }}
         />
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <ColorButton
-          selected={selectedColor === '#f5ea14'}
+          selected={selectedColor === Colors.yellowColor}
           color="#f5ea14"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.yellowColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#6fcbdc'}
+          selected={selectedColor === Colors.aquaColor}
           color="#6fcbdc"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.aquaColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#ec2079'}
+          selected={selectedColor === Colors.pinkColor}
           color="#ec2079"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.pinkColor);
           }}
         />
         <ColorButton
-          selected={selectedColor === '#fff181'}
+          selected={selectedColor === Colors.warmWhiteColor}
           color="#fff181"
           onPressColor={(color: string) => {
-            onPress(color);
+            onPress(Colors.warmWhiteColor);
           }}
         />
       </View>
