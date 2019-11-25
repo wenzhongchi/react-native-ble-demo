@@ -88,7 +88,7 @@ const StarColor = ({ onPress, containerStyle, selectedColor }: Props) => {
         />
         <ColorButton
           selected={selectedColor === Colors.limeColor}
-          color="#29a9e1"
+          color="#00ff32"
           onPressColor={(color: string) => {
             onPress(Colors.limeColor);
           }}

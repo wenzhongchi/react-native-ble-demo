@@ -57,11 +57,11 @@ const ShootingColor = ({
           flex: 1,
         }}>
         <TextButton
-          selected={selectedMode === '1'}
+          selected={selectedMode === 'X'}
           containerStyle={{ width: '100%' }}
           text="SS1"
           onPressText={(text: string) => {
-            if (onPressText) onPressText('1');
+            if (onPressText) onPressText('X');
           }}
         />
         <ColorButton
@@ -99,11 +99,11 @@ const ShootingColor = ({
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <TextButton
-          selected={selectedMode === '2'}
+          selected={selectedMode === 'Y'}
           containerStyle={{ width: '100%' }}
           text="SS2"
           onPressText={(text: string) => {
-            if (onPressText) onPressText('2');
+            if (onPressText) onPressText('Y');
           }}
         />
         <ColorButton
@@ -141,11 +141,11 @@ const ShootingColor = ({
       </View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <TextButton
-          selected={selectedMode === '3'}
+          selected={selectedMode === 'Z'}
           containerStyle={{ width: '100%' }}
           text="SS3"
           onPressText={(text: string) => {
-            if (onPressText) onPressText('3');
+            if (onPressText) onPressText('Z');
           }}
         />
         <ColorButton
@@ -159,7 +159,7 @@ const ShootingColor = ({
         <ColorButton
           selected={selectedColor === Colors.limeColor}
           containerStyle={{ width: '100%' }}
-          color="#29a9e1"
+          color="#00ff32"
           onPressColor={(color: string) => {
             onPress(Colors.limeColor);
           }}

@@ -96,7 +96,7 @@ class Home extends Component<Props, State> {
       ambientColorName: 'white',
       starDisabled: false,
       ambientDisabled: false,
-      selectedShootingMode: '1',
+      selectedShootingMode: 'X',
       appState: AppState.currentState,
       connectedPeripheralId: null,
     };
@@ -350,7 +350,7 @@ class Home extends Component<Props, State> {
           }}
           onPressRainDrops={() => {
             this.setState({ starIconName: 'RainDropsIcon' });
-            this.handleWrite('D');
+            this.handleWrite('P');
           }}
           onPressBreeze={() => {
             this.setState({ starIconName: 'BreezeIcon' });
